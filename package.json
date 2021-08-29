@@ -5,16 +5,24 @@
   "author": "BrunoSantoni <brunosantoni98@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^27.0.1",
     "@types/node": "^16.7.5",
-    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
     "eslint": "^7.12.1",
-    "eslint-config-standard-with-typescript": "^20.0.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^14.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.0.0",
     "git-commit-msg-linter": "^3.2.8",
     "husky": "^7.0.2",
+    "jest": "^27.1.0",
     "lint-staged": "^11.1.2",
+    "ts-jest": "^27.0.5",
     "typescript": "^4"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
