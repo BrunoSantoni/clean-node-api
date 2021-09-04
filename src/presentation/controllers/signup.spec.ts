@@ -3,6 +3,7 @@ import { SignUpController } from './signup';
 describe('SignUp COntroller', () => {
   test('Should return 400 if no name is provided', () => {
     const sut = new SignUpController(); // SUT -> Classe que está sendo testada
+
     const httpRequest = {
       body: {
         email: 'any_email@mail.com',
@@ -10,9 +11,11 @@ describe('SignUp COntroller', () => {
         passwordConfirmation: 'any_password',
       },
     };
-
     const httpResponse = sut.handle(httpRequest);
 
+    // toBe → Compara o ponteiro dos objetos, a referência;
+    // toEqual → Compara apenas o valor
     expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.body).toEqual(new Error('Missing param: name'));
   });
 });
