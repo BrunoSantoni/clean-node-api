@@ -1,3 +1,4 @@
+// Protocolos (tipos/interfaces) genéricos de todo controlador
+
 export * from './controller';
-export * from './email-validator';
 export * from './http';
