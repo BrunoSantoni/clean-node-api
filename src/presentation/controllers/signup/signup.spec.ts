@@ -20,7 +20,6 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub();
 };
 
-// Parei no 15:46 do vídeo 5
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add(account: AddAccountModel): Promise<AccountModel> {
