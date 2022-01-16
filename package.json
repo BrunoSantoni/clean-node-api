@@ -5,6 +5,7 @@
   "author": "BrunoSantoni <brunosantoni98@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^2.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.5",
@@ -35,7 +36,9 @@
     "test:ci": "yarn test --coverage"
   },
   "dependencies": {
+    "@types/mongodb": "^4.0.7",
     "bcrypt": "^5.0.1",
+    "mongodb": "^4.3.0",
     "validator": "^13.7.0"
   }
 }

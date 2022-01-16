@@ -4,6 +4,7 @@ export default {
   coverageDirectory: 'coverage',
   roots: ['<rootDir>/src'],
   testEnvironment: 'jest-environment-node',
+  preset: '@shelf/jest-mongodb',
   transform: {
     '.+\\.ts$': 'ts-jest',
   },
