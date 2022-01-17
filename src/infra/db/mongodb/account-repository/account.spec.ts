@@ -9,6 +9,15 @@ describe(('Account Mongo Repository'), () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });
+
+  beforeEach(async () => {
+    // Limpando a tabela antes dos outros testes
+    const accountCollection = MongoHelper.getCollection('accounts');
+
+    // Se passar com um objeto vazio, deleta todos os registros
+    await accountCollection.deleteMany({});
+  });
+
   afterAll(async () => {
     await MongoHelper.disconnect();
   });
