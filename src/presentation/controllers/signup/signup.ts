@@ -1,7 +1,7 @@
 import { MissingParamError, InvalidParamError } from '../../errors';
 import { badRequest, serverError, success } from '../../helpers/http-helper';
 import {
-  Controller, HttpRequest, HttpResponse, AddAccount, EmailValidator,
+  Controller, HttpRequest, HttpResponse, AddAccount, EmailValidator, AccountModel,
 } from './signup-protocols';
 
 export class SignUpController implements Controller {
@@ -40,7 +40,7 @@ export class SignUpController implements Controller {
 
       const account = await this.addAccount.add({ name, email, password });
 
-      return success(account);
+      return success<AccountModel>(account);
     } catch (err) {
       console.error(err);
       return serverError();
