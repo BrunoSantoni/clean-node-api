@@ -12,7 +12,7 @@ describe(('Account Mongo Repository'), () => {
 
   beforeEach(async () => {
     // Limpando a tabela antes dos outros testes
-    const accountCollection = MongoHelper.getCollection('accounts');
+    const accountCollection = await MongoHelper.getCollection('accounts');
 
     // Se passar com um objeto vazio, deleta todos os registros
     await accountCollection.deleteMany({});
