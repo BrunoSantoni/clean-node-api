@@ -8,7 +8,7 @@ export class LoginController implements Controller {
 
     for (const field of requiredFields) {
       if (!httpRequest.body[field]) {
-        return badRequest(new MissingParamError('email'));
+        return badRequest(new MissingParamError(field));
       }
     }
 
