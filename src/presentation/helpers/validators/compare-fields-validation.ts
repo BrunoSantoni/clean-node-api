@@ -4,7 +4,7 @@ import { Validation } from './validation';
 export class CompareFieldsValidation implements Validation {
   constructor(
     private readonly fieldName: string,
-    private readonly fieldToCompareName,
+    private readonly fieldToCompareName: string,
   ) {}
 
   validate<T>(data: T): void | Error {
