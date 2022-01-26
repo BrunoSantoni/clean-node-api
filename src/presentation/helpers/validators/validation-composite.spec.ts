@@ -9,7 +9,7 @@ type SutTypes = {
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
     validate<T>(data: T): void | Error {
-      return new InvalidParamError('field');
+      return null;
     }
   }
 
@@ -28,7 +28,9 @@ const makeSut = (): SutTypes => {
 
 describe('Validation Composite', () => {
   test('Should return an error if any validation fails', () => {
-    const { sut } = makeSut();
+    const { sut, validationStub } = makeSut();
+    jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => new InvalidParamError('field'));
+
     const error = sut.validate<{ field: string }>({ field: 'any_value' });
 
     expect(error).toEqual(new InvalidParamError('field'));
