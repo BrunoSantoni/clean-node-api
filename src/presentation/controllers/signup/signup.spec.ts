@@ -1,4 +1,4 @@
-import { ServerError } from '../../errors';
+import { MissingParamError, ServerError } from '../../errors';
 import {
   AccountModel, AddAccount, AddAccountModel, HttpRequest, Validation,
 } from './signup-protocols';
@@ -114,10 +114,10 @@ describe('SignUp Controller', () => {
   test('Should return 400 if validation returns an error', async () => {
     const { sut, validationStub } = makeSut();
 
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error());
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'));
 
     const httpResponse = await sut.handle(makeFakeRequest());
 
-    expect(httpResponse).toEqual(badRequest(new Error()));
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')));
   });
 });
