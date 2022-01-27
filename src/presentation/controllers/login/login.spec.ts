@@ -1,7 +1,7 @@
-import { InvalidParamError, MissingParamError, ServerError } from '../../errors';
+import { ServerError } from '../../errors';
 import {
   badRequest, serverError, success, unauthorized,
-} from '../../helpers/http-helper';
+} from '../../helpers/http/http-helper';
 import { Validation, Authentication, HttpRequest } from './login-protocols';
 import { LoginController } from './login';
 
