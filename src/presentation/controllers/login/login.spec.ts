@@ -2,7 +2,9 @@ import { ServerError } from '../../errors';
 import {
   badRequest, serverError, success, unauthorized,
 } from '../../helpers/http/http-helper';
-import { Validation, Authentication, HttpRequest } from './login-protocols';
+import {
+  Validation, Authentication, HttpRequest, AuthenticationModel,
+} from './login-protocols';
 import { LoginController } from './login';
 
 type SutTypes = {
@@ -20,7 +22,7 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth(email: string, password: string): Promise<string> {
+    async auth(authentication: AuthenticationModel): Promise<string> {
       return new Promise((resolve) => resolve('any_token'));
     }
   }
@@ -56,7 +58,7 @@ describe('Login Controller', () => {
 
     await sut.handle(makeFakeRequest());
 
-    expect(authSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password');
+    expect(authSpy).toHaveBeenCalledWith({ email: 'any_email@mail.com', password: 'any_password' });
   });
 
   test('Should return 401 if invalid credentials are provided', async () => {
