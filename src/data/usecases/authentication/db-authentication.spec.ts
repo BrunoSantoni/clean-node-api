@@ -139,4 +139,13 @@ describe('DbAuthentication UseCase', () => {
     const promise = sut.auth(makeFakeAuthentication());
     await expect(promise).rejects.toThrow();
   });
+
+  // No caso de sucesso não mocka nada.
+  test('Should return a token on success', async () => {
+    const { sut } = makeSut();
+
+    const token = await sut.auth(makeFakeAuthentication());
+
+    expect(token).toBe('any_token');
+  });
 });
