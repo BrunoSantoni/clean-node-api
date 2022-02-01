@@ -63,8 +63,25 @@ describe(('Account Mongo Repository'), () => {
   test('Should return null if loadByEmail fails', async () => {
     const sut = makeSut();
 
-    const account = await sut.loadByEmail('any_emadsil@mail.com');
+    const account = await sut.loadByEmail('any_email@mail.com');
 
     expect(account).toBeFalsy();
+  });
+
+  test('Should update the account accessToken on updateAccessToken success', async () => {
+    const sut = makeSut();
+
+    const { insertedId } = await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+    });
+
+    await sut.updateAccessToken(String(insertedId), 'any_token');
+
+    const account = await accountCollection.findOne({ _id: insertedId });
+
+    expect(account).toBeTruthy();
+    expect(account.accessToken).toBe('any_token');
   });
 });
