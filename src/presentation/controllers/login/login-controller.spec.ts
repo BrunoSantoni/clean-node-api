@@ -4,8 +4,8 @@ import {
 } from '../../helpers/http/http-helper';
 import {
   Validation, Authentication, HttpRequest, AuthenticationModel,
-} from './login-protocols';
-import { LoginController } from './login';
+} from './login-controller-protocols';
+import { LoginController } from './login-controller';
 
 type SutTypes = {
   sut: LoginController;
