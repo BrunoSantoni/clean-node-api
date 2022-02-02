@@ -4,6 +4,12 @@
   "main": "index.js",
   "author": "BrunoSantoni <brunosantoni98@gmail.com>",
   "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn test:ci"
+    }
+  },
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rm -rf dist && tsc",
