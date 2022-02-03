@@ -10,6 +10,12 @@
       "pre-push": "yarn test:ci"
     }
   },
+  "lint-staged": {
+    "*.ts": [
+      "eslint 'src/**' --fix",
+      "yarn test:staged"
+    ]
+  },
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rm -rf dist && tsc",
