@@ -4,17 +4,17 @@
   "main": "index.js",
   "author": "BrunoSantoni <brunosantoni98@gmail.com>",
   "license": "MIT",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn test:ci"
-    }
-  },
   "lint-staged": {
     "*.ts": [
       "eslint 'src/**' --fix",
       "yarn test:staged"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn test:ci"
+    }
   },
   "scripts": {
     "start": "node dist/main/server.js",
