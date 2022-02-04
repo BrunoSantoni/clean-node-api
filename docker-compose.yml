@@ -1,0 +1,23 @@
+services:
+  db:
+    container_name: mongo-container
+    image: mongo:4
+    restart: always # Caso o mongo caia, restarta automaticamente
+    volumes: # Volumes mapeia pasta do PC para o Docker para persistir dados
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+  api:
+    container_name: api-container
+    build: . # Build informa o caminho que tem o Dockerfile para gerar a imagem
+    image: clean-node-api # Quando usado com o build, o image serve para dar um nome ao contâiner
+    restart: always
+    command: yarn start # Trouxe o CMD yarn start do Dockerfile para cá
+    # Trouxe o COPY ./dist ./dist do Dockerfile para cá para garantir que o cache não vai impedir de atualizar o projeto
+    volumes:
+      - ./dist:/usr/src/clean-node-api/dist
+    ports: # Quando for expor portas aqui, pode retirar o EXPOSE 3333 do Dockerfile
+      - "3333:3333"
+    links:
+      - db
+    
