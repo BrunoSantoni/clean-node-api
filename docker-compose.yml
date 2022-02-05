@@ -15,7 +15,7 @@ services:
     command: bash -c "yarn --prod && yarn add -D nodemon && yarn debug" # Trouxe o CMD yarn debug do Dockerfile para cá
     # Trouxe o COPY ./dist ./dist do Dockerfile para cá para garantir que o cache não vai impedir de atualizar o projeto
     volumes:
-      - ./dist:/usr/src/clean-node-api/dist
+      - ./dist/:/usr/src/clean-node-api/dist/ # A barra no final indica que qualquer arquivo que mudar na dist também de trigger
       - ./package.json:/usr/src/clean-node-api/package.json
     ports: # Quando for expor portas aqui, pode retirar o EXPOSE 3333 do Dockerfile
       - "3333:3333"
