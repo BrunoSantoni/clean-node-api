@@ -9,15 +9,17 @@ services:
       - "27017:27017"
   api:
     container_name: api-container
-    build: . # Build informa o caminho que tem o Dockerfile para gerar a imagem
-    image: clean-node-api # Quando usado com o build, o image serve para dar um nome ao contâiner
+    image: node:16
+    working_dir: /usr/src/clean-node-api
     restart: always
-    command: yarn start # Trouxe o CMD yarn start do Dockerfile para cá
+    command: bash -c "yarn --prod && yarn add -D nodemon && yarn debug" # Trouxe o CMD yarn debug do Dockerfile para cá
     # Trouxe o COPY ./dist ./dist do Dockerfile para cá para garantir que o cache não vai impedir de atualizar o projeto
     volumes:
       - ./dist:/usr/src/clean-node-api/dist
+      - ./package.json:/usr/src/clean-node-api/package.json
     ports: # Quando for expor portas aqui, pode retirar o EXPOSE 3333 do Dockerfile
       - "3333:3333"
+      - "9222:9222"
     links:
       - db
     

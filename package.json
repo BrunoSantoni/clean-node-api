@@ -19,6 +19,7 @@
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rm -rf dist && tsc",
+    "debug": "node --inspect=0.0.0.0:9222 --nolazy dist/main/server.js",
     "docker:start": "yarn build && docker-compose up -d",
     "docker:stop": "docker-compose down",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
