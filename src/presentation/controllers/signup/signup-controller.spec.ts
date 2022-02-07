@@ -1,4 +1,4 @@
-import { MissingParamError, ServerError } from '../../errors';
+import { EmailInUseError, MissingParamError, ServerError } from '../../errors';
 import {
   AccountModel,
   AddAccount,
@@ -9,7 +9,9 @@ import {
   Validation,
 } from './signup-controller-protocols';
 import { SignUpController } from './signup-controller';
-import { badRequest, serverError, success } from '../../helpers/http/http-helper';
+import {
+  badRequest, forbidden, serverError, success,
+} from '../../helpers/http/http-helper';
 
 type SutTypes = {
   sut: SignUpController;
@@ -103,18 +105,19 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')));
   });
 
+  test('Should return 403 if AddAccount returns null', async () => {
+    const { sut, addAccountStub } = makeSut();
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise((resolve) => resolve(null)));
+
+    const httpResponse = await sut.handle(makeFakeRequest());
+
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()));
+  });
+
   test('Should return 200 if valid data is provided', async () => {
     const { sut } = makeSut();
 
-    const httpRequest = {
-      body: {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
-        passwordConfirmation: 'valid_password',
-      },
-    };
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(makeFakeRequest());
 
     expect(httpResponse).toEqual(success({ accessToken: 'any_token' }));
   });
