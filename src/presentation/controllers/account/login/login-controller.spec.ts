@@ -1,7 +1,7 @@
-import { ServerError } from '../../errors';
+import { ServerError } from '../../../errors';
 import {
   badRequest, serverError, success, unauthorized,
-} from '../../helpers/http/http-helper';
+} from '../../../helpers/http/http-helper';
 import {
   Validation, Authentication, HttpRequest, AuthenticationModel,
 } from './login-controller-protocols';

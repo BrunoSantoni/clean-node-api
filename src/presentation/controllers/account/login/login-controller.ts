@@ -1,6 +1,6 @@
 import {
   badRequest, serverError, success, unauthorized,
-} from '../../helpers/http/http-helper';
+} from '../../../helpers/http/http-helper';
 import {
   Validation, Authentication, Controller, HttpRequest, HttpResponse,
 } from './login-controller-protocols';
