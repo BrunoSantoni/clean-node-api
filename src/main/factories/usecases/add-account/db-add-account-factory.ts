@@ -9,8 +9,8 @@ export const makeDbAddAccount = (): AddAccount => {
 
   // Infra
   const bcryptAdapter = new BcryptAdapter(salt);
-  const addAccountRepository = new AccountMongoRepository();
+  const accountMongoRepository = new AccountMongoRepository();
 
   // Data
-  return new DbAddAccount(bcryptAdapter, addAccountRepository);
+  return new DbAddAccount(bcryptAdapter, accountMongoRepository, accountMongoRepository);
 };
