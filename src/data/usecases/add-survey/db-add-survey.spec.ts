@@ -1,9 +1,9 @@
 import { DbAddSurvey } from './db-add-survey';
-import { AddSurvey, AddSurveyModel, AddSurveyRepository } from './db-add-survey-protocols';
+import { AddSurveyModel, AddSurveyRepository } from './db-add-survey-protocols';
 
 type SutTypes = {
   sut: DbAddSurvey;
-  addSurveyRepositoryStub: AddSurvey;
+  addSurveyRepositoryStub: AddSurveyRepository;
 };
 
 const makeFakeSurveyData = (): AddSurveyModel => ({
@@ -43,5 +43,14 @@ describe('DbAddSurvey Usecase', () => {
     await sut.add(fakeSurveyData);
 
     expect(addSpy).toHaveBeenCalledWith(fakeSurveyData);
+  });
+
+  test('Should throw if AddSurveyRepository throws', async () => {
+    const { sut, addSurveyRepositoryStub } = makeSut();
+    jest.spyOn(addSurveyRepositoryStub, 'add').mockReturnValueOnce(new Promise((_, reject) => reject(new Error())));
+
+    const promise = sut.add(makeFakeSurveyData());
+
+    await expect(promise).rejects.toThrow();
   });
 });
