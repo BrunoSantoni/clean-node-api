@@ -1,5 +1,5 @@
 import { AccessDeniedError } from '../../errors';
-import { forbidden } from '../../helpers/http/http-helper';
+import { forbidden, success } from '../../helpers/http/http-helper';
 import {
   HttpRequest, HttpResponse, Middleware, LoadAccountByToken,
 } from './auth-middleware-protocols';
@@ -20,5 +20,7 @@ export class AuthMiddleware implements Middleware {
     if (!account) {
       return forbidden(new AccessDeniedError());
     }
+
+    return success({ accountId: account.id });
   }
 }
