@@ -15,8 +15,6 @@ export class AuthMiddleware implements Middleware {
       return forbidden(new AccessDeniedError());
     }
 
-    console.log(httpRequest.headers['x-access-token']);
-
     await this.loadAccountByToken.load(httpRequest.headers['x-access-token']);
   }
 }
