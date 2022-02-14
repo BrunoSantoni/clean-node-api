@@ -7,6 +7,7 @@ import {
 export class AuthMiddleware implements Middleware {
   constructor(
     private readonly loadAccountByToken: LoadAccountByToken,
+    private readonly role?: string,
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -16,7 +17,7 @@ export class AuthMiddleware implements Middleware {
         return forbidden(new AccessDeniedError());
       }
 
-      const account = await this.loadAccountByToken.load(httpRequest.headers['x-access-token']);
+      const account = await this.loadAccountByToken.load(accessToken, this.role);
 
       if (!account) {
         return forbidden(new AccessDeniedError());
