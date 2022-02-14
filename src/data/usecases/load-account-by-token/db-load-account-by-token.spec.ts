@@ -1,10 +1,18 @@
 import { DbLoadAccountByToken } from './db-load-account-by-token';
-import { Decrypter } from './db-load-account-by-token-protocols';
+import { Decrypter, LoadAccountByTokenRepository, AccountModel } from './db-load-account-by-token-protocols';
 
 type SutTypes = {
   sut: DbLoadAccountByToken,
   decrypterStub: Decrypter,
+  loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository,
 };
+
+const makeFakeAccount = (): AccountModel => ({
+  id: 'any_id',
+  email: 'any_email@mail.com',
+  name: 'any_name',
+  password: 'any_password',
+});
 
 const makeDecrypter = (): Decrypter => {
   class DecrypterStub implements Decrypter {
@@ -16,13 +24,25 @@ const makeDecrypter = (): Decrypter => {
   return new DecrypterStub();
 };
 
+const makeLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
+  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
+    async loadByToken(token: string, role?: string): Promise<AccountModel> {
+      return new Promise((resolve) => resolve(makeFakeAccount()));
+    }
+  }
+
+  return new LoadAccountByTokenRepositoryStub();
+};
+
 const makeSut = (): SutTypes => {
   const decrypterStub = makeDecrypter();
-  const sut = new DbLoadAccountByToken(decrypterStub);
+  const loadAccountByTokenRepositoryStub = makeLoadAccountByTokenRepository();
+  const sut = new DbLoadAccountByToken(decrypterStub, loadAccountByTokenRepositoryStub);
 
   return {
     sut,
     decrypterStub,
+    loadAccountByTokenRepositoryStub,
   };
 };
 
@@ -43,5 +63,14 @@ describe('DbLoadAccountByToken Usecase', () => {
     const account = await sut.load('any_token', 'any_role');
 
     expect(account).toBeNull();
+  });
+
+  test('Should call LoadAccountByTokenRepository with correct values', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut();
+    const loadByTokenSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken');
+
+    await sut.load('any_token', 'any_role');
+
+    expect(loadByTokenSpy).toHaveBeenCalledWith('decrypted_value');
   });
 });
