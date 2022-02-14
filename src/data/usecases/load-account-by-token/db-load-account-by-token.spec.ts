@@ -71,7 +71,7 @@ describe('DbLoadAccountByToken Usecase', () => {
 
     await sut.load('any_token', 'any_role');
 
-    expect(loadByTokenSpy).toHaveBeenCalledWith('decrypted_value');
+    expect(loadByTokenSpy).toHaveBeenCalledWith('decrypted_value', 'any_role');
   });
 
   test('Should return null if LoadAccountByTokenRepository returns null', async () => {
