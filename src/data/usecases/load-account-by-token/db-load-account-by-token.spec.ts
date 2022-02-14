@@ -3,7 +3,7 @@ import { Decrypter } from './db-load-account-by-token-protocols';
 
 type SutTypes = {
   sut: DbLoadAccountByToken,
-  decrypterStub: Decrypter
+  decrypterStub: Decrypter,
 };
 
 const makeDecrypter = (): Decrypter => {
@@ -31,8 +31,17 @@ describe('DbLoadAccountByToken Usecase', () => {
     const { sut, decrypterStub } = makeSut();
     const decryptSpy = jest.spyOn(decrypterStub, 'decrypt');
 
-    await sut.load('any_token');
+    await sut.load('any_token', 'any_role');
 
     expect(decryptSpy).toHaveBeenCalledWith('any_token');
+  });
+
+  test('Should return null if Decrypter returns null', async () => {
+    const { sut, decrypterStub } = makeSut();
+    jest.spyOn(decrypterStub, 'decrypt').mockReturnValueOnce(new Promise((resolve) => resolve(null)));
+
+    const account = await sut.load('any_token', 'any_role');
+
+    expect(account).toBeNull();
   });
 });
