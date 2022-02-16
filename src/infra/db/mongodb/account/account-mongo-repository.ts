@@ -43,7 +43,12 @@ LoadAccountByTokenRepository {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const { _id: mongoId, ...accountInfo } = await accountCollection.findOne({
       accessToken: token,
-      role,
+      // Buscar pela role fornecida ou se o usuário tiver a role admin deve acessar sempre
+      $or: [{
+        role,
+      }, {
+        role: 'admin',
+      }],
     }) || {};
 
     if (!mongoId || !accountInfo) return null;
