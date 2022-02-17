@@ -7,7 +7,6 @@ export const adaptRoute = (controller: Controller) => async (req: Request, res: 
   };
 
   const successStatusCodes = [200, 204];
-
   const httpResponse = await controller.handle(httpRequest);
 
   if (!successStatusCodes.includes(httpResponse.statusCode)) {
