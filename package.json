@@ -10,12 +10,6 @@
       "yarn test:staged"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn test:ci"
-    }
-  },
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rm -rf dist && tsc",
