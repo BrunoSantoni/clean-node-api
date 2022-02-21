@@ -27,6 +27,7 @@ describe('Survey Mongo Repository', () => {
         answer: 'any_other_answer',
       },
     ],
+    date: new Date(),
   });
 
   const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository();
