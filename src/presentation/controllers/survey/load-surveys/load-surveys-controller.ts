@@ -1,3 +1,4 @@
+import { success } from '../../../helpers/http/http-helper';
 import {
   Controller, HttpRequest, HttpResponse, LoadSurveys,
 } from './load-surveys-controller-protocols';
@@ -8,7 +9,7 @@ export class LoadSurveysController implements Controller {
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    await this.loadSurveys.load();
-    return new Promise((resolve) => resolve(null));
+    const surveys = await this.loadSurveys.load();
+    return success(surveys);
   }
 }
