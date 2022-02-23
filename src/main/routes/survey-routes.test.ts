@@ -100,5 +100,40 @@ describe('Survey Routes', () => {
       await request(app).get('/api/surveys').set('x-access-token', accessToken).send()
         .expect(204);
     });
+
+    test('should return 200 on load surveys with valid accessToken', async () => {
+      const account = await accountCollection.insertOne({
+        name: 'Bruno',
+        email: 'brunosantoni98@gmail.com',
+        password: 'bruno123',
+      });
+
+      await surveyCollection.insertMany([{
+        question: 'any_question',
+        answers: [
+          {
+            image: 'any_image',
+            answer: 'any_answer',
+          },
+          {
+            answer: 'any_other_answer',
+          },
+        ],
+        date: new Date(),
+      }]);
+
+      const accessToken = sign({ id: account.insertedId }, env.jwtSecret);
+
+      await accountCollection.updateOne({
+        _id: account.insertedId,
+      }, {
+        $set: {
+          accessToken,
+        },
+      });
+
+      await request(app).get('/api/surveys').set('x-access-token', accessToken).send()
+        .expect(200);
+    });
   });
 });
