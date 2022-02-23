@@ -5,15 +5,15 @@ import { AddSurveyModel } from '../../../../domain/usecases/add-survey';
 
 let surveyCollection: Collection;
 
-const makeFakeSurveyData = (): AddSurveyModel => ({
-  question: 'any_question',
+const makeFakeSurveyData = (prefix = 'any'): AddSurveyModel => ({
+  question: `${prefix}_question`,
   answers: [
     {
-      image: 'any_image',
-      answer: 'any_answer',
+      image: `${prefix}_image`,
+      answer: `${prefix}_answer`,
     },
     {
-      answer: 'any_other_answer',
+      answer: `${prefix}_other_answer`,
     },
   ],
   date: new Date(),
@@ -49,14 +49,16 @@ describe('Survey Mongo Repository', () => {
   });
 
   describe('loadAll()', () => {
-    test('Should add a survey on success', async () => {
+    test('Should load all surveys on success', async () => {
+      await surveyCollection.insertMany([makeFakeSurveyData(), makeFakeSurveyData('other')]);
+
       const sut = makeSut();
 
-      await sut.add(makeFakeSurveyData());
+      const surveys = await sut.loadAll();
 
-      const survey = await surveyCollection.findOne({ question: 'any_question' });
-
-      expect(survey).toBeTruthy();
+      expect(surveys.length).toBe(2);
+      expect(surveys[0].question).toBe('any_question');
+      expect(surveys[1].question).toBe('other_question');
     });
   });
 });
