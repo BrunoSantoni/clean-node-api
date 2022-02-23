@@ -26,7 +26,7 @@ describe('Survey Routes', () => {
   });
 
   describe('POST /surveys', () => {
-    test('should return 403 on add survey without accessToken', async () => {
+    test('Should return 403 on add survey without accessToken', async () => {
       await request(app).post('/api/surveys').send({
         question: 'Question',
         answers: [
@@ -41,7 +41,7 @@ describe('Survey Routes', () => {
       }).expect(403);
     });
 
-    test('should return 204 on add survey with valid accessToken', async () => {
+    test('Should return 204 on add survey with valid accessToken', async () => {
       const account = await accountCollection.insertOne({
         name: 'Bruno',
         email: 'brunosantoni98@gmail.com',
@@ -76,8 +76,29 @@ describe('Survey Routes', () => {
   });
 
   describe('GET /surveys', () => {
-    test('should return 403 on load surveys without accessToken', async () => {
+    test('Should return 403 on load surveys without accessToken', async () => {
       await request(app).get('/api/surveys').send().expect(403);
+    });
+
+    test('should return 204 if no surveys are found', async () => {
+      const account = await accountCollection.insertOne({
+        name: 'Bruno',
+        email: 'brunosantoni98@gmail.com',
+        password: 'bruno123',
+      });
+
+      const accessToken = sign({ id: account.insertedId }, env.jwtSecret);
+
+      await accountCollection.updateOne({
+        _id: account.insertedId,
+      }, {
+        $set: {
+          accessToken,
+        },
+      });
+
+      await request(app).get('/api/surveys').set('x-access-token', accessToken).send()
+        .expect(204);
     });
   });
 });
