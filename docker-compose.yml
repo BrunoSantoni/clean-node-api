@@ -13,6 +13,8 @@ services:
     working_dir: /usr/src/clean-node-api
     restart: always
     command: bash -c "yarn --prod && yarn add -D nodemon && yarn debug" # Trouxe o CMD yarn debug do Dockerfile para cá
+    environment:
+      - MONGO_URL=mongodb://db:27017/clean-node-api
     # Trouxe o COPY ./dist ./dist do Dockerfile para cá para garantir que o cache não vai impedir de atualizar o projeto
     volumes:
       - ./dist/:/usr/src/clean-node-api/dist/ # A barra no final indica que qualquer arquivo que mudar na dist também de trigger
