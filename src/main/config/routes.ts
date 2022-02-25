@@ -7,7 +7,7 @@ export const setupRoutes = (app: Express) => {
   const files = readdirSync(`${__dirname}/../routes`);
 
   files.forEach(async (file) => {
-    if (!file.includes('.test.')) {
+    if (!file.includes('.test.') && !file.endsWith('.map')) {
       const route = (await import(`../routes/${file}`)).default;
       route(router);
     }
