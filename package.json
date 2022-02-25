@@ -10,9 +10,12 @@
       "yarn test:staged"
     ]
   },
+  "_moduleAliases": {
+    "@": "dist"
+  },
   "scripts": {
     "start": "node dist/main/server.js",
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "prepare": "yarn husky install",
     "debug": "nodemon -L --watch ./dist --inspect=0.0.0.0:9222 --nolazy ./dist/main/server.js",
     "docker:start": "yarn build && docker-compose up -d",
@@ -60,6 +63,7 @@
     "bcrypt": "^5.0.1",
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
     "mongodb": "^4.3.0",
     "validator": "^13.7.0"
   },

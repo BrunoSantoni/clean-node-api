@@ -1,5 +1,6 @@
-import { LogErrorRepository } from '../../data/protocols/db/log/log-error-repository';
-import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols';
+import {
+  LogErrorRepository, Controller, HttpRequest, HttpResponse,
+} from './log-controller-decorator-protocols';
 
 /*
 A classe que vai decorar tem que ser do mesmo tipo da classe que tá

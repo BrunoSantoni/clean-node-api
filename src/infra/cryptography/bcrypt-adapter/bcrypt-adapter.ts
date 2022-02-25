@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
-import { HashComparer } from '../../../data/protocols/cryptography/hash-comparer';
-import { Hasher } from '../../../data/protocols/cryptography/hasher';
+import { Hasher, HashComparer } from './bcrypt-adapter-protocols';
 
 /* O adapter pode fazer mais uma coisa desde que estejam interligadas
 O importante é manter as interfaces separadas para não ferir o ISP */
