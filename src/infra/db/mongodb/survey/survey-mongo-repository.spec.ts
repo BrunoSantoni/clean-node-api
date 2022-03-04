@@ -1,7 +1,6 @@
 import { Collection } from 'mongodb';
 import { SurveyMongoRepository } from './survey-mongo-repository';
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper';
-import { AddSurveyModel } from './survey-mongo-repository-protocols';
+import { AddSurveyModel, MongoHelper } from './survey-mongo-repository-protocols';
 
 let surveyCollection: Collection;
 
@@ -67,6 +66,20 @@ describe('Survey Mongo Repository', () => {
       const surveys = await sut.loadAll();
 
       expect(surveys.length).toBe(0);
+    });
+  });
+
+  describe('loadById()', () => {
+    test('Should load survey by id on success', async () => {
+      const survey = makeFakeSurveyData();
+      const { insertedId } = await surveyCollection.insertOne(survey);
+
+      const sut = makeSut();
+
+      const returnedSurvey = await sut.loadById(String(insertedId));
+
+      expect(returnedSurvey.question).toEqual(survey.question);
+      expect(returnedSurvey.answers).toEqual(survey.answers);
     });
   });
 });
