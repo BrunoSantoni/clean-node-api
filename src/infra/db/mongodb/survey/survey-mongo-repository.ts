@@ -1,9 +1,17 @@
+import { ObjectId } from 'mongodb';
 import {
-  AddSurveyRepository, LoadSurveysRepository, SurveyModel, AddSurveyModel,
+  AddSurveyRepository,
+  LoadSurveysRepository,
+  LoadSurveyByIdRepository,
+  SurveyModel,
+  AddSurveyModel,
+  MongoHelper,
 } from './survey-mongo-repository-protocols';
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper';
 
-export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository {
+export class SurveyMongoRepository implements
+AddSurveyRepository,
+LoadSurveysRepository,
+LoadSurveyByIdRepository {
   async add(surveyData: AddSurveyModel): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveys');
     await surveyCollection.insertOne(surveyData);
@@ -14,5 +22,12 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     const surveys = await surveyCollection.find().toArray() as unknown as SurveyModel[];
 
     return surveys;
+  }
+
+  async loadById(id: string): Promise<SurveyModel> {
+    const surveyCollection = await MongoHelper.getCollection('surveys');
+    const survey = await surveyCollection.findOne({ _id: new ObjectId(id) }) as unknown as SurveyModel;
+
+    return survey;
   }
 }
