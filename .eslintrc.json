@@ -10,6 +10,7 @@
     "max-classes-per-file": "off",
     "no-restricted-syntax": "off",
     "import/extensions": "off",
-    "@typescript-eslint/no-unused-vars": "warn"
+    "@typescript-eslint/no-unused-vars": "warn",
+    "max-len": "off",
   }
 }
