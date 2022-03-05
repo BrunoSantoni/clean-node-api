@@ -56,6 +56,7 @@ describe('Survey Mongo Repository', () => {
       const surveys = await sut.loadAll();
 
       expect(surveys.length).toBe(2);
+      expect(surveys[0].id).toBeTruthy();
       expect(surveys[0].question).toBe('any_question');
       expect(surveys[1].question).toBe('other_question');
     });
@@ -78,6 +79,7 @@ describe('Survey Mongo Repository', () => {
 
       const returnedSurvey = await sut.loadById(String(insertedId));
 
+      expect(returnedSurvey.id).toBeTruthy();
       expect(returnedSurvey.question).toEqual(survey.question);
       expect(returnedSurvey.answers).toEqual(survey.answers);
     });

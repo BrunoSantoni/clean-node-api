@@ -19,15 +19,19 @@ LoadSurveyByIdRepository {
 
   async loadAll(): Promise<SurveyModel[]> {
     const surveyCollection = await MongoHelper.getCollection('surveys');
-    const surveys = await surveyCollection.find().toArray() as unknown as SurveyModel[];
+    const surveys = await surveyCollection.find().toArray();
 
-    return surveys;
+    return MongoHelper.mapCollection(surveys);
   }
 
   async loadById(id: string): Promise<SurveyModel> {
     const surveyCollection = await MongoHelper.getCollection('surveys');
-    const survey = await surveyCollection.findOne({ _id: new ObjectId(id) }) as unknown as SurveyModel;
+    const { _id: mongoId, ...survey } = await surveyCollection.findOne({ _id: new ObjectId(id) });
 
-    return survey;
+    if(!mongoId || !survey) return null;
+
+    const convertedSurvey =  survey as Omit<SurveyModel, 'id'>;
+
+    return MongoHelper.map<Omit<SurveyModel, 'id'>>(mongoId, convertedSurvey);
   }
 }

@@ -25,4 +25,11 @@ export const MongoHelper = {
       ...collectionData,
     };
   },
+
+  mapCollection(collectionsData: any[]): any[] {
+    return collectionsData.map(collection => {
+      const { _id: mongoId, ...collectionData } = collection;
+      return MongoHelper.map(mongoId, collectionData);
+    });
+  },
 };
