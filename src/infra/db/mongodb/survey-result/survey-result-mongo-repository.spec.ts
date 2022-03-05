@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository';
 import { AccountModel, SurveyModel, AddSurveyModel, MongoHelper, AddAccountModel } from './survey-result-mongo-repository-protocols';
 
@@ -76,6 +76,30 @@ describe('Survey Result Mongo Repository', () => {
       expect(surveyResult).toBeTruthy();
       expect(surveyResult.id).toBeTruthy();
       expect(surveyResult.answer).toBe(survey.answers[0].answer);
+    });
+
+    test('Should update a survey result if its not new', async () => {
+      const survey = makeFakeSurveyData();
+      const surveyId = await makeSurvey();
+      const accountId = await makeAccount();
+      const { insertedId } = await surveyResultCollection.insertOne({
+        surveyId: new ObjectId(surveyId),
+        accountId: new ObjectId(accountId),
+        answer: survey.answers[0].answer,
+        date: new Date(),
+      })
+      const sut = makeSut();
+
+      const surveyResult = await sut.save({
+        surveyId,
+        accountId,
+        answer: survey.answers[1].answer,
+        date: new Date(),
+      });
+
+      expect(surveyResult).toBeTruthy();
+      expect(surveyResult.id).toEqual(String(insertedId)); // Garantindo que o save não gerou um registro novo
+      expect(surveyResult.answer).toBe(survey.answers[1].answer);
     });
   });
 })
