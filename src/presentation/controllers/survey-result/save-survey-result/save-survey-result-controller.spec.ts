@@ -1,11 +1,20 @@
+import MockDate from 'mockdate';
 import { InvalidParamError } from "@/presentation/errors";
 import { forbidden, serverError } from "@/presentation/helpers/http/http-helper";
 import { SaveSurveyResultController } from "./save-survey-result-controller";
-import { HttpRequest, LoadSurveyById, SurveyModel } from "./save-survey-result-controller-protocols";
+import {
+  HttpRequest,
+  LoadSurveyById,
+  SaveSurveyResult,
+  SurveyModel,
+  SaveSurveyResultModel,
+  SurveyResultModel,
+} from "./save-survey-result-controller-protocols";
 
 type SutTypes = {
   sut: SaveSurveyResultController,
   loadSurveyByIdStub: LoadSurveyById,
+  saveSurveyResultStub: SaveSurveyResult,
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -14,7 +23,8 @@ const makeFakeRequest = (): HttpRequest => ({
   },
   body: {
     answer: 'any_answer',
-  }
+  },
+  accountId: 'any_account_id', // Injeta na request pelo Express
 });
 
 const makeFakeSurvey = (prefix = 'any'): SurveyModel => ({
@@ -27,6 +37,14 @@ const makeFakeSurvey = (prefix = 'any'): SurveyModel => ({
   date: new Date(),
 });
 
+const makeFakeSurveyResult = (): SurveyResultModel => ({
+  id: 'any_id',
+  surveyId: 'any_survey_id',
+  accountId: 'any_account_id',
+  answer: 'any_answer',
+  date: new Date(),
+})
+
 const makeLoadSurveyById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
     async loadById(id: string): Promise<SurveyModel> {
@@ -37,17 +55,36 @@ const makeLoadSurveyById = (): LoadSurveyById => {
   return new LoadSurveyByIdStub();
 }
 
+const makeSaveSurveyResult = (): SaveSurveyResult => {
+  class SaveSurveyResultStub implements SaveSurveyResult {
+    async save(data: SaveSurveyResultModel): Promise<SurveyResultModel> {
+      return Promise.resolve(makeFakeSurveyResult());
+    }
+  }
+
+  return new SaveSurveyResultStub();
+}
+
 const makeSut = (): SutTypes => {
   const loadSurveyByIdStub = makeLoadSurveyById();
-  const sut = new SaveSurveyResultController(loadSurveyByIdStub);
+  const saveSurveyResultStub = makeSaveSurveyResult();
+  const sut = new SaveSurveyResultController(loadSurveyByIdStub, saveSurveyResultStub);
 
   return {
     sut,
     loadSurveyByIdStub,
+    saveSurveyResultStub,
   }
 }
 
 describe('SaveSurveyResult Controller', () => {
+  beforeAll(() => {
+    MockDate.set(new Date());
+  });
+
+  afterAll(() => {
+    MockDate.reset();
+  });
 
   test('Should call LoadSurveyById with correct values', async () => {
     const { sut, loadSurveyByIdStub } = makeSut();
@@ -84,5 +121,20 @@ describe('SaveSurveyResult Controller', () => {
     const httpResponse = await sut.handle(makeFakeRequest());
 
     expect(httpResponse).toEqual(serverError(new Error()));
+  });
+
+  test('Should call SaveSurveyResult with correct values', async () => {
+    const { sut, saveSurveyResultStub } = makeSut();
+    const httpRequest = makeFakeRequest();
+    const saveSpy = jest.spyOn(saveSurveyResultStub, 'save');
+
+    await sut.handle(httpRequest);
+
+    expect(saveSpy).toHaveBeenCalledWith({
+      surveyId: httpRequest.params.surveyId,
+      accountId: httpRequest.accountId,
+      date: new Date(),
+      answer: httpRequest.body.answer,
+    });
   });
 })
