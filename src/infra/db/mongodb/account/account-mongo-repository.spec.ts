@@ -3,8 +3,7 @@ Teste de integração
 */
 
 import { Collection } from 'mongodb';
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper';
-import { AddAccountModel } from './account-mongo-repository-protocols';
+import { AddAccountModel, MongoHelper } from './account-mongo-repository-protocols';
 import { AccountMongoRepository } from './account-mongo-repository';
 
 let accountCollection: Collection;
