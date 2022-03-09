@@ -4,6 +4,7 @@ import { Controller, HttpRequest } from '@/presentation/protocols';
 export const adaptRoute = (controller: Controller) => async (req: Request, res: Response) => {
   const httpRequest: HttpRequest = {
     body: req.body,
+    params: req.params,
   };
 
   const successStatusCodes = [200, 204];
