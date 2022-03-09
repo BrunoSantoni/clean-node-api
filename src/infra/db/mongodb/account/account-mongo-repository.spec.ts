@@ -3,16 +3,11 @@ Teste de integração
 */
 
 import { Collection } from 'mongodb';
-import { AddAccountParams, MongoHelper } from './account-mongo-repository-protocols';
+import { MongoHelper } from './account-mongo-repository-protocols';
 import { AccountMongoRepository } from './account-mongo-repository';
+import { mockAddAccountParams } from '@/domain/test';
 
 let accountCollection: Collection;
-
-const makeFakeRequest = (): AddAccountParams => ({
-  name: 'any_name',
-  email: 'any_email@mail.com',
-  password: 'any_password',
-});
 
 describe(('Account Mongo Repository'), () => {
   beforeAll(async () => {
@@ -36,7 +31,7 @@ describe(('Account Mongo Repository'), () => {
   describe('add()', () => {
     test('Should return an account on add success', async () => {
       const sut = makeSut();
-      const httpRequest = makeFakeRequest();
+      const httpRequest = mockAddAccountParams();
       const account = await sut.add(httpRequest);
 
       expect(account).toBeTruthy();
@@ -50,7 +45,7 @@ describe(('Account Mongo Repository'), () => {
   describe('loadByEmail()', () => {
     test('Should return an account on loadByEmail success', async () => {
       const sut = makeSut();
-      const httpRequest = makeFakeRequest();
+      const httpRequest = mockAddAccountParams();
       await accountCollection.insertOne(httpRequest);
 
       const account = await sut.loadByEmail(httpRequest.email);
@@ -75,7 +70,7 @@ describe(('Account Mongo Repository'), () => {
     test('Should update the account accessToken on updateAccessToken success', async () => {
       const sut = makeSut();
 
-      const { insertedId } = await accountCollection.insertOne(makeFakeRequest());
+      const { insertedId } = await accountCollection.insertOne(mockAddAccountParams());
 
       await sut.updateAccessToken(String(insertedId), 'any_token');
 
@@ -89,7 +84,7 @@ describe(('Account Mongo Repository'), () => {
   describe('loadByToken()', () => {
     test('Should return an account on loadByToken without role', async () => {
       const sut = makeSut();
-      const httpRequest = makeFakeRequest();
+      const httpRequest = mockAddAccountParams();
 
       await accountCollection.insertOne({
         ...httpRequest,
@@ -106,7 +101,7 @@ describe(('Account Mongo Repository'), () => {
 
     test('Should return an account on loadByToken with admin role', async () => {
       const sut = makeSut();
-      const httpRequest = makeFakeRequest();
+      const httpRequest = mockAddAccountParams();
 
       await accountCollection.insertOne({
         ...httpRequest,
@@ -124,7 +119,7 @@ describe(('Account Mongo Repository'), () => {
 
     test('Should return null on loadByToken with invalid role', async () => {
       const sut = makeSut();
-      const httpRequest = makeFakeRequest();
+      const httpRequest = mockAddAccountParams();
 
       await accountCollection.insertOne({
         ...httpRequest,
@@ -137,7 +132,7 @@ describe(('Account Mongo Repository'), () => {
 
     test('Should return an account on loadByToken with if user is admin', async () => {
       const sut = makeSut();
-      const httpRequest = makeFakeRequest();
+      const httpRequest = mockAddAccountParams();
 
       await accountCollection.insertOne({
         ...httpRequest,

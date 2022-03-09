@@ -1,6 +1,7 @@
 import { Collection, ObjectId } from 'mongodb';
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository';
-import { AddSurveyParams, MongoHelper, AddAccountParams } from './survey-result-mongo-repository-protocols';
+import { AddSurveyParams, MongoHelper } from './survey-result-mongo-repository-protocols';
+import { mockAddAccountParams } from '@/domain/test';
 
 let accountCollection: Collection;
 let surveyCollection: Collection;
@@ -20,12 +21,6 @@ const makeFakeSurveyData = (prefix = 'any'): AddSurveyParams => ({
   date: new Date(),
 });
 
-const makeFakeAccountData = (): AddAccountParams => ({
-  name: 'any_name',
-  email: 'any_email@mail.com',
-  password: 'any_password',
-});
-
 const makeSut = (): SurveyResultMongoRepository => new SurveyResultMongoRepository();
 
 const makeSurvey = async (): Promise<string> => {
@@ -35,7 +30,7 @@ const makeSurvey = async (): Promise<string> => {
 };
 
 const makeAccount = async (): Promise<string> => {
-  const { insertedId } = await accountCollection.insertOne(makeFakeAccountData());
+  const { insertedId } = await accountCollection.insertOne(mockAddAccountParams());
 
   return String(insertedId);
 };

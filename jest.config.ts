@@ -1,6 +1,10 @@
 export default {
   collectCoverage: true,
-  collectCoverageFrom: ['<rootDir>/src/**/*.ts', '!<rootDir>/src/main/**'],
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/main/**',
+    '!**/test/**'
+  ],
   coverageDirectory: 'coverage',
   roots: ['<rootDir>/src'],
   moduleNameMapper: {

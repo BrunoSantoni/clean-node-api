@@ -1,12 +1,13 @@
+import { LoginController } from './login-controller';
+import {
+  Validation, Authentication, HttpRequest,
+} from './login-controller-protocols';
+import { throwError } from '@/domain/test';
 import { ServerError } from '@/presentation/errors';
 import {
   badRequest, serverError, success, unauthorized,
 } from '@/presentation/helpers/http/http-helper';
-import {
-  Validation, Authentication, HttpRequest, AuthenticationParams,
-} from './login-controller-protocols';
-import { LoginController } from './login-controller';
-import { throwError } from '@/domain/test';
+import { mockAuthentication, mockValidation } from '@/presentation/test';
 
 type SutTypes = {
   sut: LoginController;
@@ -14,35 +15,16 @@ type SutTypes = {
   authenticationStub: Authentication;
 };
 
-const makeFakeRequest = (): HttpRequest => ({
+const mockRequest = (): HttpRequest => ({
   body: {
     email: 'any_email@mail.com',
     password: 'any_password',
   },
 });
 
-const makeAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth(authentication: AuthenticationParams): Promise<string> {
-      return new Promise((resolve) => resolve('any_token'));
-    }
-  }
-  return new AuthenticationStub();
-};
-
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate<T>(data: T): Error | void {
-      return null;
-    }
-  }
-
-  return new ValidationStub();
-};
-
 const makeSut = (): SutTypes => {
-  const validationStub = makeValidation();
-  const authenticationStub = makeAuthentication();
+  const validationStub = mockValidation();
+  const authenticationStub = mockAuthentication();
   const sut = new LoginController(validationStub, authenticationStub);
 
   return {
@@ -57,16 +39,16 @@ describe('Login Controller', () => {
     const { sut, authenticationStub } = makeSut();
     const authSpy = jest.spyOn(authenticationStub, 'auth');
 
-    await sut.handle(makeFakeRequest());
+    await sut.handle(mockRequest());
 
     expect(authSpy).toHaveBeenCalledWith({ email: 'any_email@mail.com', password: 'any_password' });
   });
 
   test('Should return 401 if invalid credentials are provided', async () => {
     const { sut, authenticationStub } = makeSut();
-    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise((resolve) => resolve(null)));
+    jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(() => Promise.resolve(null));
 
-    const httpResponse = await sut.handle(makeFakeRequest());
+    const httpResponse = await sut.handle(mockRequest());
 
     expect(httpResponse).toEqual(unauthorized());
   });
@@ -75,7 +57,7 @@ describe('Login Controller', () => {
     const { sut, authenticationStub } = makeSut();
     jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(throwError);
 
-    const httpResponse = await sut.handle(makeFakeRequest());
+    const httpResponse = await sut.handle(mockRequest());
 
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')));
   });
@@ -83,7 +65,7 @@ describe('Login Controller', () => {
   test('Should return 200 if valid credentials are provided', async () => {
     const { sut } = makeSut();
 
-    const httpResponse = await sut.handle(makeFakeRequest());
+    const httpResponse = await sut.handle(mockRequest());
 
     expect(httpResponse).toEqual(success({ accessToken: 'any_token' }));
   });
@@ -91,7 +73,7 @@ describe('Login Controller', () => {
   test('Should call Validation with correct value', async () => {
     const { sut, validationStub } = makeSut();
     const validateSpy = jest.spyOn(validationStub, 'validate');
-    const httpRequest = makeFakeRequest();
+    const httpRequest = mockRequest();
 
     await sut.handle(httpRequest);
 
@@ -103,7 +85,7 @@ describe('Login Controller', () => {
 
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error());
 
-    const httpResponse = await sut.handle(makeFakeRequest());
+    const httpResponse = await sut.handle(mockRequest());
 
     expect(httpResponse).toEqual(badRequest(new Error()));
   });
