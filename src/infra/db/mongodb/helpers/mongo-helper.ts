@@ -27,7 +27,7 @@ export const MongoHelper = {
   },
 
   mapCollection(collectionsData: any[]): any[] {
-    return collectionsData.map(collection => {
+    return collectionsData.map((collection) => {
       const { _id: mongoId, ...collectionData } = collection;
       return MongoHelper.map(mongoId, collectionData);
     });

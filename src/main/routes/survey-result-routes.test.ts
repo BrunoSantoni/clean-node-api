@@ -26,7 +26,7 @@ const makeAccessToken = async (): Promise<string> => {
   });
 
   return accessToken;
-}
+};
 
 describe('Survey Result Routes', () => {
   beforeAll(async () => {
@@ -69,11 +69,12 @@ describe('Survey Result Routes', () => {
 
       const accessToken = await makeAccessToken();
       await request(app)
-      .put(`/api/surveys/${insertedId}/results`)
-      .set('x-access-token', accessToken)
-      .send({
-        answer: 'any_other_answer',
-      }).expect(200);
+        .put(`/api/surveys/${insertedId}/results`)
+        .set('x-access-token', accessToken)
+        .send({
+          answer: 'any_other_answer',
+        })
+        .expect(200);
     });
   });
 });

@@ -1,7 +1,7 @@
 import MockDate from 'mockdate';
-import { InvalidParamError } from "@/presentation/errors";
-import { forbidden, serverError, success } from "@/presentation/helpers/http/http-helper";
-import { SaveSurveyResultController } from "./save-survey-result-controller";
+import { InvalidParamError } from '@/presentation/errors';
+import { forbidden, serverError, success } from '@/presentation/helpers/http/http-helper';
+import { SaveSurveyResultController } from './save-survey-result-controller';
 import {
   HttpRequest,
   LoadSurveyById,
@@ -9,13 +9,13 @@ import {
   SurveyModel,
   SaveSurveyResultModel,
   SurveyResultModel,
-} from "./save-survey-result-controller-protocols";
+} from './save-survey-result-controller-protocols';
 
 type SutTypes = {
   sut: SaveSurveyResultController,
   loadSurveyByIdStub: LoadSurveyById,
   saveSurveyResultStub: SaveSurveyResult,
-}
+};
 
 const makeFakeRequest = (): HttpRequest => ({
   params: {
@@ -43,7 +43,7 @@ const makeFakeSurveyResult = (): SurveyResultModel => ({
   accountId: 'any_account_id',
   answer: 'any_answer',
   date: new Date(),
-})
+});
 
 const makeLoadSurveyById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
@@ -53,7 +53,7 @@ const makeLoadSurveyById = (): LoadSurveyById => {
   }
 
   return new LoadSurveyByIdStub();
-}
+};
 
 const makeSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
@@ -63,7 +63,7 @@ const makeSaveSurveyResult = (): SaveSurveyResult => {
   }
 
   return new SaveSurveyResultStub();
-}
+};
 
 const makeSut = (): SutTypes => {
   const loadSurveyByIdStub = makeLoadSurveyById();
@@ -74,8 +74,8 @@ const makeSut = (): SutTypes => {
     sut,
     loadSurveyByIdStub,
     saveSurveyResultStub,
-  }
-}
+  };
+};
 
 describe('SaveSurveyResult Controller', () => {
   beforeAll(() => {
@@ -154,4 +154,4 @@ describe('SaveSurveyResult Controller', () => {
 
     expect(httpResponse).toEqual(success(makeFakeSurveyResult()));
   });
-})
+});

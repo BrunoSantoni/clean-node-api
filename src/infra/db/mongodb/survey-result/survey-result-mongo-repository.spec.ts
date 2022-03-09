@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository';
-import { AccountModel, SurveyModel, AddSurveyModel, MongoHelper, AddAccountModel } from './survey-result-mongo-repository-protocols';
+import { AddSurveyModel, MongoHelper, AddAccountModel } from './survey-result-mongo-repository-protocols';
 
 let accountCollection: Collection;
 let surveyCollection: Collection;
@@ -32,13 +32,13 @@ const makeSurvey = async (): Promise<string> => {
   const { insertedId } = await surveyCollection.insertOne(makeFakeSurveyData());
 
   return String(insertedId);
-}
+};
 
 const makeAccount = async (): Promise<string> => {
   const { insertedId } = await accountCollection.insertOne(makeFakeAccountData());
 
   return String(insertedId);
-}
+};
 
 describe('Survey Result Mongo Repository', () => {
   beforeAll(async () => {
@@ -87,7 +87,7 @@ describe('Survey Result Mongo Repository', () => {
         accountId: new ObjectId(accountId),
         answer: survey.answers[0].answer,
         date: new Date(),
-      })
+      });
       const sut = makeSut();
 
       const surveyResult = await sut.save({
@@ -102,4 +102,4 @@ describe('Survey Result Mongo Repository', () => {
       expect(surveyResult.answer).toBe(survey.answers[1].answer);
     });
   });
-})
+});
