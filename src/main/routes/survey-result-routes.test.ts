@@ -51,5 +51,29 @@ describe('Survey Result Routes', () => {
         answer: 'any_answer',
       }).expect(403);
     });
+
+    test('Should return 200 on save survey result with correct accessToken', async () => {
+      const { insertedId } = await surveyCollection.insertOne({
+        question: 'any_question',
+        answers: [
+          {
+            image: 'any_image',
+            answer: 'any_answer',
+          },
+          {
+            answer: 'any_other_answer',
+          },
+        ],
+        date: new Date(),
+      });
+
+      const accessToken = await makeAccessToken();
+      await request(app)
+      .put(`/api/surveys/${insertedId}/results`)
+      .set('x-access-token', accessToken)
+      .send({
+        answer: 'any_other_answer',
+      }).expect(200);
+    });
   });
 });
