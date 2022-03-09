@@ -1,12 +1,12 @@
 import { Collection, ObjectId } from 'mongodb';
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository';
-import { AddSurveyModel, MongoHelper, AddAccountModel } from './survey-result-mongo-repository-protocols';
+import { AddSurveyParams, MongoHelper, AddAccountParams } from './survey-result-mongo-repository-protocols';
 
 let accountCollection: Collection;
 let surveyCollection: Collection;
 let surveyResultCollection: Collection;
 
-const makeFakeSurveyData = (prefix = 'any'): AddSurveyModel => ({
+const makeFakeSurveyData = (prefix = 'any'): AddSurveyParams => ({
   question: `${prefix}_question`,
   answers: [
     {
@@ -20,7 +20,7 @@ const makeFakeSurveyData = (prefix = 'any'): AddSurveyModel => ({
   date: new Date(),
 });
 
-const makeFakeAccountData = (): AddAccountModel => ({
+const makeFakeAccountData = (): AddAccountParams => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password',

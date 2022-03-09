@@ -3,12 +3,12 @@ Teste de integração
 */
 
 import { Collection } from 'mongodb';
-import { AddAccountModel, MongoHelper } from './account-mongo-repository-protocols';
+import { AddAccountParams, MongoHelper } from './account-mongo-repository-protocols';
 import { AccountMongoRepository } from './account-mongo-repository';
 
 let accountCollection: Collection;
 
-const makeFakeRequest = (): AddAccountModel => ({
+const makeFakeRequest = (): AddAccountParams => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password',
