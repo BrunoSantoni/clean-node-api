@@ -10,6 +10,7 @@ import {
   SaveSurveyResultParams,
   SurveyResultModel,
 } from './save-survey-result-controller-protocols';
+import { mockSurveyModel, mockSurveyResultModel } from '@/domain/test';
 
 type SutTypes = {
   sut: SaveSurveyResultController,
@@ -27,28 +28,10 @@ const makeFakeRequest = (): HttpRequest => ({
   accountId: 'any_account_id', // Injeta na request pelo Express
 });
 
-const makeFakeSurvey = (prefix = 'any'): SurveyModel => ({
-  id: `${prefix}_id`,
-  question: `${prefix}_question`,
-  answers: [{
-    image: `${prefix}_image`,
-    answer: `${prefix}_answer`,
-  }],
-  date: new Date(),
-});
-
-const makeFakeSurveyResult = (): SurveyResultModel => ({
-  id: 'any_id',
-  surveyId: 'any_survey_id',
-  accountId: 'any_account_id',
-  answer: 'any_answer',
-  date: new Date(),
-});
-
 const makeLoadSurveyById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
     async loadById(id: string): Promise<SurveyModel> {
-      return Promise.resolve(makeFakeSurvey());
+      return Promise.resolve(mockSurveyModel());
     }
   }
 
@@ -58,7 +41,7 @@ const makeLoadSurveyById = (): LoadSurveyById => {
 const makeSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
     async save(data: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return Promise.resolve(makeFakeSurveyResult());
+      return Promise.resolve(mockSurveyResultModel());
     }
   }
 
@@ -152,6 +135,6 @@ describe('SaveSurveyResult Controller', () => {
 
     const httpResponse = await sut.handle(makeFakeRequest());
 
-    expect(httpResponse).toEqual(success(makeFakeSurveyResult()));
+    expect(httpResponse).toEqual(success(mockSurveyResultModel()));
   });
 });

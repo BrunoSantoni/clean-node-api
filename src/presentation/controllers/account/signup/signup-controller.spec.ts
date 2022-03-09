@@ -12,7 +12,7 @@ import { SignUpController } from './signup-controller';
 import {
   badRequest, forbidden, serverError, success,
 } from '@/presentation/helpers/http/http-helper';
-import { throwError } from '@/domain/test';
+import { mockAccountModel, throwError } from '@/domain/test';
 
 type SutTypes = {
   sut: SignUpController;
@@ -21,17 +21,10 @@ type SutTypes = {
   authenticationStub: Authentication;
 };
 
-const makeFakeAccount = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'valid_password',
-});
-
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
     async auth(authentication: AuthenticationParams): Promise<string> {
-      return new Promise((resolve) => resolve('any_token'));
+      return Promise.resolve('any_token');
     }
   }
   return new AuthenticationStub();
@@ -59,7 +52,7 @@ const makeValidation = (): Validation => {
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add(account: AddAccountParams): Promise<AccountModel> {
-      return new Promise((resolve) => resolve(makeFakeAccount()));
+      return Promise.resolve(mockAccountModel());
     }
   }
   return new AddAccountStub();
@@ -99,7 +92,7 @@ describe('SignUp Controller', () => {
 
     /* Apesar do teste não falhar se der um throw sem resolver a promise,
     fazendo assim torna o teste mais fiel */
-    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => new Promise((_, reject) => reject(new Error())));
+    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(throwError);
 
     const httpResponse = await sut.handle(makeFakeRequest());
 
@@ -108,7 +101,7 @@ describe('SignUp Controller', () => {
 
   test('Should return 403 if AddAccount returns null', async () => {
     const { sut, addAccountStub } = makeSut();
-    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise((resolve) => resolve(null)));
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(Promise.resolve(null));
 
     const httpResponse = await sut.handle(makeFakeRequest());
 
