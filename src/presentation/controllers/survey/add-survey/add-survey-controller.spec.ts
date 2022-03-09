@@ -4,6 +4,7 @@ import { AddSurveyController } from './add-survey-controller';
 import {
   AddSurvey, AddSurveyParams, HttpRequest, Validation,
 } from './add-survey-controller-protocols';
+import { throwError } from '@/domain/test';
 
 type SutTypes = {
   sut: AddSurveyController;
@@ -92,7 +93,7 @@ describe('AddSurvey Controller', () => {
 
   test('Should return 500 if AddSurvey throws', async () => {
     const { sut, addSurveyStub } = makeSut();
-    jest.spyOn(addSurveyStub, 'add').mockReturnValueOnce(new Promise((_, reject) => reject(new Error())));
+    jest.spyOn(addSurveyStub, 'add').mockImplementationOnce(throwError);
 
     const httpResponse = await sut.handle(makeFakeRequest());
 

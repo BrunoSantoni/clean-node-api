@@ -12,6 +12,7 @@ import { SignUpController } from './signup-controller';
 import {
   badRequest, forbidden, serverError, success,
 } from '@/presentation/helpers/http/http-helper';
+import { throwError } from '@/domain/test';
 
 type SutTypes = {
   sut: SignUpController;
@@ -153,7 +154,7 @@ describe('SignUp Controller', () => {
 
   test('Should return 500 if Authentication throws', async () => {
     const { sut, authenticationStub } = makeSut();
-    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise((_, reject) => reject(new Error())));
+    jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(throwError);
 
     const httpResponse = await sut.handle(makeFakeRequest());
 
