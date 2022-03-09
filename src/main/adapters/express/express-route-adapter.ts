@@ -5,6 +5,7 @@ export const adaptRoute = (controller: Controller) => async (req: Request, res: 
   const httpRequest: HttpRequest = {
     body: req.body,
     params: req.params,
+    accountId: req.accountId,
   };
 
   const successStatusCodes = [200, 204];
