@@ -1,5 +1,11 @@
+import {
+  badRequestResponse,
+  notFoundResponse,
+  serverErrorResponse,
+  unauthorizedResponse,
+} from './components';
 import { loginPath } from './paths';
-import { accountSchema, loginParamsSchema } from './schemas';
+import { accountSchema, errorSchema, loginParamsSchema } from './schemas';
 
 export default {
   openapi: '3.0.0',
@@ -7,6 +13,10 @@ export default {
     title: 'Clean Node API',
     description: 'API to create and vote on polls using Clean Architecture with NodeJS',
     version: '1.0.0',
+  },
+  license: {
+    name: 'MIT',
+    url: 'https://opensource.org/licenses/MIT',
   },
   servers: [{
     url: '/api', // Prefixo da URL da aplicação
@@ -21,6 +31,13 @@ export default {
   },
   schemas: {
     account: accountSchema,
+    error: errorSchema,
     loginParams: loginParamsSchema,
+  },
+  components: {
+    badRequestResponse,
+    notFoundResponse,
+    serverErrorResponse,
+    unauthorizedResponse,
   },
 };
