@@ -15,6 +15,7 @@ import {
   surveyAnswerSchema,
   surveySchema,
   surveysSchema,
+  addSurveyParamsSchema,
 } from './schemas';
 
 export default {
@@ -48,6 +49,7 @@ export default {
   },
   schemas: {
     account: accountSchema,
+    addSurveyParams: addSurveyParamsSchema,
     survey: surveySchema,
     surveyAnswer: surveyAnswerSchema,
     surveys: surveysSchema,
