@@ -5,11 +5,12 @@ import {
   serverErrorResponse,
   unauthorizedResponse,
 } from './components';
-import { loginPath, surveyPath } from './paths';
+import { loginPath, signUpPath, surveyPath } from './paths';
 import {
   accountSchema,
   apiKeyAuthSchema,
   errorSchema,
+  signUpParamsSchema,
   loginParamsSchema,
   surveyAnswerSchema,
   surveySchema,
@@ -31,14 +32,18 @@ export default {
     url: '/api', // Prefixo da URL da aplicação
   }],
   // Tags agrupam as rotas da API
-  tags: [{
-    name: 'Login',
-  }, {
-    name: 'Surveys',
-  }],
+  tags: [
+    {
+      name: 'Login',
+    },
+    {
+      name: 'Surveys',
+    },
+  ],
   // Paths = rotas
   paths: {
     '/login': loginPath,
+    '/signup': signUpPath,
     '/surveys': surveyPath,
   },
   schemas: {
@@ -48,6 +53,7 @@ export default {
     surveys: surveysSchema,
     error: errorSchema,
     loginParams: loginParamsSchema,
+    signUpParams: signUpParamsSchema,
   },
   components: {
     securitySchemes: {
