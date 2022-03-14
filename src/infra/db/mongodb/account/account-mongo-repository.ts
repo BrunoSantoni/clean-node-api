@@ -7,7 +7,7 @@ import {
   AccountModel,
   AddAccountParams,
 } from './account-mongo-repository-protocols';
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper';
+import { MongoHelper } from '@/infra/db/mongodb/helpers';
 
 export class AccountMongoRepository implements
 AddAccountRepository,
