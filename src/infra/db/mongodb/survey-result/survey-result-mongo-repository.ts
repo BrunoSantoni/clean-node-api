@@ -9,7 +9,7 @@ import {
 } from './survey-result-mongo-repository-protocols';
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository, LoadSurveyResultRepository {
-  async save(surveyData: SaveSurveyResultParams): Promise<SurveyResultModel> {
+  async save(surveyData: SaveSurveyResultParams): Promise<void> {
     const surveyResultCollection = await MongoHelper.getCollection('survey_results');
 
     await surveyResultCollection.findOneAndUpdate({
@@ -23,10 +23,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
     }, {
       upsert: true,
     });
-
-    const surveyResult = await this.loadBySurveyId(surveyData.surveyId);
-
-    return surveyResult;
   }
 
   async loadBySurveyId(surveyId: string): Promise<SurveyResultModel> {

@@ -4,8 +4,8 @@ import { SaveSurveyResult } from '@/domain/usecases/survey-result/save-survey-re
 
 export const makeDbSaveSurveyResult = (): SaveSurveyResult => {
   // Infra
-  const saveSurveyResultRepository = new SurveyResultMongoRepository();
+  const surveyResultRepository = new SurveyResultMongoRepository();
 
   // Data
-  return new DbSaveSurveyResult(saveSurveyResultRepository);
+  return new DbSaveSurveyResult(surveyResultRepository, surveyResultRepository);
 };
