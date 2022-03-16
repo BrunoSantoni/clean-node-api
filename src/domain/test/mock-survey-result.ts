@@ -21,7 +21,7 @@ export const mockSurveyResultModel = (): SurveyResultModel => ({
     {
       answer: 'other_answer',
       count: 10,
-      percent: 87,
+      percent: 53,
     },
   ],
   date: new Date(),
