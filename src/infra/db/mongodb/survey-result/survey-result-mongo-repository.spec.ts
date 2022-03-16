@@ -43,9 +43,6 @@ describe('Survey Result Mongo Repository', () => {
   describe('save()', () => {
     test('Should add a survey result if its new', async () => {
       const survey = mockAddSurveyParams();
-      survey.answers.push({
-        answer: 'other_answer',
-      });
       const surveyId = await makeSurvey(survey);
       const accountId = await makeAccount();
       const sut = makeSut();
@@ -67,9 +64,6 @@ describe('Survey Result Mongo Repository', () => {
 
     test('Should update a survey result if its not new', async () => {
       const survey = mockAddSurveyParams();
-      survey.answers.push({
-        answer: 'other_answer',
-      });
       const surveyId = await makeSurvey(survey);
       const accountId = await makeAccount();
       await surveyResultCollection.insertOne({
@@ -101,8 +95,6 @@ describe('Survey Result Mongo Repository', () => {
     test('Should load survey result', async () => {
       const survey = mockAddSurveyParams();
       survey.answers.push({
-        answer: 'other_answer',
-      }, {
         answer: 'third_answer',
       });
       const surveyId = await makeSurvey(survey);
