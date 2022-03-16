@@ -97,4 +97,64 @@ describe('Survey Result Mongo Repository', () => {
       expect(surveyResult.answers[1].percent).toBe(0);
     });
   });
+
+  describe('loadBySurveyId()', () => {
+    test('Should load survey result', async () => {
+      const survey = mockAddSurveyParams();
+      survey.answers.push({
+        answer: 'other_answer',
+      }, {
+        answer: 'third_answer',
+      });
+      const surveyId = await makeSurvey(survey);
+      const accountId = await makeAccount();
+      await surveyResultCollection.insertMany([
+        {
+          surveyId: new ObjectId(surveyId),
+          accountId: new ObjectId(accountId),
+          answer: survey.answers[0].answer,
+          date: new Date(),
+        },
+        {
+          surveyId: new ObjectId(surveyId),
+          accountId: new ObjectId(accountId),
+          answer: survey.answers[0].answer,
+          date: new Date(),
+        },
+        {
+          surveyId: new ObjectId(surveyId),
+          accountId: new ObjectId(accountId),
+          answer: survey.answers[0].answer,
+          date: new Date(),
+        },
+        {
+          surveyId: new ObjectId(surveyId),
+          accountId: new ObjectId(accountId),
+          answer: survey.answers[1].answer,
+          date: new Date(),
+        },
+      ]);
+      const sut = makeSut();
+
+      const surveyResult = await sut.loadBySurveyId(surveyId);
+
+      expect(surveyResult).toBeTruthy();
+      expect(String(surveyResult.surveyId)).toEqual(surveyId);
+      expect(surveyResult.answers[0].count).toBe(3);
+      expect(surveyResult.answers[0].percent).toBe(75);
+      expect(surveyResult.answers[1].count).toBe(1);
+      expect(surveyResult.answers[1].percent).toBe(25);
+      expect(surveyResult.answers[2].count).toBe(0);
+      expect(surveyResult.answers[2].percent).toBe(0);
+    });
+
+    test('Should load empty survey result', async () => {
+      const surveyId = await makeSurvey();
+      const sut = makeSut();
+
+      const surveyResult = await sut.loadBySurveyId(surveyId);
+
+      expect(surveyResult).toBeNull();
+    });
+  });
 });
