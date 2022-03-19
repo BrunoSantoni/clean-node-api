@@ -11,6 +11,7 @@
     "no-restricted-syntax": "off",
     "import/extensions": "off",
     "@typescript-eslint/no-unused-vars": "warn",
-    "max-len": "off"
+    "max-len": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }
