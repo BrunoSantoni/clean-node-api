@@ -1,3 +1,4 @@
+import { AuthenticationModel } from '@/domain/models/authentication';
 import { EmailInUseError } from '@/presentation/errors';
 import {
   badRequest, forbidden, serverError, success,
@@ -37,12 +38,12 @@ export class SignUpController implements Controller {
         return forbidden(new EmailInUseError());
       }
 
-      const accessToken = await this.authentication.auth({
+      const authenticationModel = await this.authentication.auth({
         email,
         password,
       });
 
-      return success<{ accessToken: string }>({ accessToken });
+      return success<AuthenticationModel>(authenticationModel);
     } catch (error) {
       return serverError(error);
     }
