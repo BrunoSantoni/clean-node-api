@@ -1,7 +1,7 @@
 import MockDate from 'mockdate';
 import { DbLoadSurveys } from './db-load-surveys';
 import { LoadSurveysRepositorySpy } from '@/data/test';
-import { mockSurveyModel, throwError } from '@/domain/test';
+import { throwError } from '@/domain/test';
 
 type SutTypes = {
   sut: DbLoadSurveys;
