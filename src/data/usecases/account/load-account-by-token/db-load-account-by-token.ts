@@ -9,7 +9,15 @@ export class DbLoadAccountByToken implements LoadAccountByToken {
   ) {}
 
   async load(accessToken: string, role?: string): Promise<AccountModel> {
-    const decryptedToken = await this.decrypter.decrypt(accessToken);
+    // O jwt retorna uma exceção se possuir um token mas ele for inválido, queremo
+    // colocar um catch para retornar null e apresentar 403 no front, e não um erro 500
+    let decryptedToken: string;
+    try {
+      decryptedToken = await this.decrypter.decrypt(accessToken);
+    } catch {
+      return null;
+    }
+
     if (!decryptedToken) {
       return null;
     }
