@@ -16,6 +16,7 @@
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "postbuild": "mkdir dist\\static && cp -r public/** dist/static",
     "prepare": "yarn husky install",
     "debug": "nodemon -L --watch ./dist --inspect=0.0.0.0:9222 --nolazy ./dist/main/server.js",
     "docker:start": "yarn build && docker-compose up -d",
