@@ -1,33 +1,43 @@
+import faker from '@faker-js/faker';
 import { mockAccountModel } from '@/domain/test';
 import { AddAccount, AddAccountParams } from '@/domain/usecases/account/add-account';
 import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-token';
 import { AccountModel } from '@/domain/models/account';
 import { Authentication, AuthenticationParams } from '@/domain/usecases/account/authentication';
 
-export const mockAddAccount = (): AddAccount => {
-  class AddAccountStub implements AddAccount {
-    async add(account: AddAccountParams): Promise<AccountModel> {
-      return Promise.resolve(mockAccountModel());
-    }
-  }
-  return new AddAccountStub();
-};
+export class AddAccountSpy implements AddAccount {
+  addAccountParams: AddAccountParams;
 
-export const mockAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth(authentication: AuthenticationParams): Promise<string> {
-      return Promise.resolve('any_token');
-    }
-  }
-  return new AuthenticationStub();
-};
+  accountModel = mockAccountModel();
 
-export const mockLoadAccountByToken = (): LoadAccountByToken => {
-  class LoadAccountByTokenStub implements LoadAccountByToken {
-    async load(accessToken: string, role?: string): Promise<AccountModel> {
-      return Promise.resolve(mockAccountModel());
-    }
+  async add(account: AddAccountParams): Promise<AccountModel> {
+    this.addAccountParams = account;
+    return Promise.resolve(this.accountModel);
   }
+}
 
-  return new LoadAccountByTokenStub();
-};
+export class AuthenticationSpy implements Authentication {
+  authenticationParams: AuthenticationParams;
+
+  token = faker.datatype.uuid();
+
+  async auth(authenticationParams: AuthenticationParams): Promise<string> {
+    this.authenticationParams = authenticationParams;
+    return Promise.resolve(this.token);
+  }
+}
+
+export class LoadAccountByTokenSpy implements LoadAccountByToken {
+  token: string;
+
+  role?: string;
+
+  accountModel = mockAccountModel();
+
+  async load(accessToken: string, role?: string): Promise<AccountModel> {
+    this.token = accessToken;
+    this.role = role;
+
+    return Promise.resolve(this.accountModel);
+  }
+}

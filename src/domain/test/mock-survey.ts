@@ -1,20 +1,21 @@
+import faker from '@faker-js/faker';
 import { SurveyModel } from '@/domain/models/survey';
 import { AddSurveyParams } from '@/domain/usecases/survey/add-survey';
 
-export const mockAddSurveyParams = (prefix = 'any'): AddSurveyParams => ({
-  question: `${prefix}_question`,
+export const mockAddSurveyParams = (): AddSurveyParams => ({
+  question: faker.random.words(),
   answers: [
     {
-      image: `${prefix}_image`,
-      answer: `${prefix}_answer`,
+      image: faker.image.imageUrl(),
+      answer: faker.random.word(),
     }, {
-      answer: 'other_answer',
+      answer: faker.random.word(),
     },
   ],
-  date: new Date(),
+  date: faker.date.recent(),
 });
 
-export const mockSurveyModel = (prefix = 'any'): SurveyModel => ({
-  id: `${prefix}_survey_id`,
-  ...mockAddSurveyParams(prefix),
+export const mockSurveyModel = (): SurveyModel => ({
+  id: faker.datatype.uuid(),
+  ...mockAddSurveyParams(),
 });

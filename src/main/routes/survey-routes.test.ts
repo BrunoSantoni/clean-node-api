@@ -1,18 +1,20 @@
 import request from 'supertest';
 import { Collection } from 'mongodb';
 import { sign } from 'jsonwebtoken';
+import faker from '@faker-js/faker';
 import { MongoHelper } from '@/infra/db/mongodb/helpers';
 import { app } from '@/main/config/app';
 import { env } from '@/main/config/env';
+import { mockAddSurveyParams } from '@/domain/test';
 
 let surveyCollection: Collection;
 let accountCollection: Collection;
 
 const makeAccessToken = async (): Promise<string> => {
   const account = await accountCollection.insertOne({
-    name: 'Bruno',
-    email: 'brunosantoni98@gmail.com',
-    password: 'bruno123',
+    name: faker.name.findName(),
+    email: faker.internet.email(),
+    password: faker.internet.password(),
   });
 
   const accessToken = sign({ id: account.insertedId }, env.jwtSecret);
@@ -47,29 +49,23 @@ describe('Survey Routes', () => {
 
   describe('POST /surveys', () => {
     test('Should return 403 on add survey without accessToken', async () => {
-      await request(app).post('/api/surveys').send({
-        question: 'Question',
-        answers: [
-          {
-            image: 'http://image-name.com',
-            answer: 'Answer 1',
-          },
-          {
-            answer: 'Answer 2',
-          },
-        ],
-      }).expect(403);
+      const survey = mockAddSurveyParams();
+      delete survey.date;
+
+      await request(app).post('/api/surveys').send(survey).expect(403);
     });
 
     test('Should return 204 on add survey with valid accessToken', async () => {
       const account = await accountCollection.insertOne({
-        name: 'Bruno',
-        email: 'brunosantoni98@gmail.com',
-        password: 'bruno123',
+        name: faker.name.findName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
         role: 'admin',
       });
 
       const accessToken = sign({ id: account.insertedId }, env.jwtSecret);
+      const survey = mockAddSurveyParams();
+      delete survey.date;
 
       await accountCollection.updateOne({
         _id: account.insertedId,
@@ -79,18 +75,7 @@ describe('Survey Routes', () => {
         },
       });
 
-      await request(app).post('/api/surveys').set('x-access-token', accessToken).send({
-        question: 'Question',
-        answers: [
-          {
-            image: 'http://image-name.com',
-            answer: 'Answer 1',
-          },
-          {
-            answer: 'Answer 2',
-          },
-        ],
-      })
+      await request(app).post('/api/surveys').set('x-access-token', accessToken).send(survey)
         .expect(204);
     });
   });
@@ -107,19 +92,7 @@ describe('Survey Routes', () => {
     });
 
     test('should return 200 on load surveys with valid accessToken', async () => {
-      await surveyCollection.insertMany([{
-        question: 'any_question',
-        answers: [
-          {
-            image: 'any_image',
-            answer: 'any_answer',
-          },
-          {
-            answer: 'any_other_answer',
-          },
-        ],
-        date: new Date(),
-      }]);
+      await surveyCollection.insertMany([mockAddSurveyParams(), mockAddSurveyParams()]);
 
       const accessToken = await makeAccessToken();
 

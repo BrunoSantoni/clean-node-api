@@ -1,18 +1,20 @@
 import request from 'supertest';
 import { sign } from 'jsonwebtoken';
 import { Collection } from 'mongodb';
+import faker from '@faker-js/faker';
 import { MongoHelper } from '@/infra/db/mongodb/helpers';
 import { app } from '@/main/config/app';
 import { env } from '@/main/config/env';
+import { mockAddSurveyParams } from '@/domain/test';
 
 let surveyCollection: Collection;
 let accountCollection: Collection;
 
 const makeAccessToken = async (): Promise<string> => {
   const account = await accountCollection.insertOne({
-    name: 'Bruno',
-    email: 'brunosantoni98@gmail.com',
-    password: 'bruno123',
+    name: faker.name.findName(),
+    email: faker.internet.email(),
+    password: faker.internet.password(),
   });
 
   const accessToken = sign({ id: account.insertedId }, env.jwtSecret);
@@ -47,32 +49,21 @@ describe('Survey Result Routes', () => {
 
   describe('PUT /surveys/:surveyId/results', () => {
     test('Should return 403 on save survey result without accessToken', async () => {
-      await request(app).put('/api/surveys/any_id/results').send({
-        answer: 'any_answer',
+      await request(app).put(`/api/surveys/${faker.datatype.uuid()}/results`).send({
+        answer: faker.random.word(),
       }).expect(403);
     });
 
     test('Should return 200 on save survey result with correct accessToken', async () => {
-      const { insertedId } = await surveyCollection.insertOne({
-        question: 'any_question',
-        answers: [
-          {
-            image: 'any_image',
-            answer: 'any_answer',
-          },
-          {
-            answer: 'any_other_answer',
-          },
-        ],
-        date: new Date(),
-      });
+      const survey = mockAddSurveyParams();
+      const { insertedId } = await surveyCollection.insertOne(survey);
 
       const accessToken = await makeAccessToken();
       await request(app)
         .put(`/api/surveys/${insertedId}/results`)
         .set('x-access-token', accessToken)
         .send({
-          answer: 'any_other_answer',
+          answer: survey.answers[0].answer,
         })
         .expect(200);
     });
@@ -80,23 +71,11 @@ describe('Survey Result Routes', () => {
 
   describe('GET /surveys/:surveyId/results', () => {
     test('Should return 403 on load survey result without accessToken', async () => {
-      await request(app).get('/api/surveys/any_id/results').expect(403);
+      await request(app).get(`/api/surveys/${faker.datatype.uuid()}/results`).expect(403);
     });
 
     test('Should return 200 on load survey result with correct accessToken', async () => {
-      const { insertedId } = await surveyCollection.insertOne({
-        question: 'any_question',
-        answers: [
-          {
-            image: 'any_image',
-            answer: 'any_answer',
-          },
-          {
-            answer: 'any_other_answer',
-          },
-        ],
-        date: new Date(),
-      });
+      const { insertedId } = await surveyCollection.insertOne(mockAddSurveyParams());
 
       const accessToken = await makeAccessToken();
       await request(app)

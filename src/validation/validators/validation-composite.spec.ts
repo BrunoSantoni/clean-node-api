@@ -1,39 +1,41 @@
+import faker from '@faker-js/faker';
 import { ValidationComposite } from './validation-composite';
 import { InvalidParamError } from '@/presentation/errors';
-import { Validation } from '@/presentation/protocols';
-import { mockValidation } from '@/validation/test';
+import { ValidationSpy } from '@/presentation/test';
 
 type SutTypes = {
   sut: ValidationComposite;
-  validationStubs: Validation[];
+  validationSpies: ValidationSpy[];
 };
 
 const makeSut = (): SutTypes => {
-  const validationStubs = [mockValidation(), mockValidation()];
-  const sut = new ValidationComposite(validationStubs);
+  const validationSpies = [new ValidationSpy(), new ValidationSpy()];
+  const sut = new ValidationComposite(validationSpies);
 
   return {
     sut,
-    validationStubs,
+    validationSpies,
   };
 };
 
+const fieldMock = faker.random.word();
+
 describe('Validation Composite', () => {
   test('Should return an error if any validation fails', () => {
-    const { sut, validationStubs } = makeSut();
-    jest.spyOn(validationStubs[0], 'validate').mockImplementationOnce(() => new InvalidParamError('field'));
+    const { sut, validationSpies } = makeSut();
+    validationSpies[0].error = new InvalidParamError(fieldMock);
 
-    const error = sut.validate<{ field: string }>({ field: 'any_value' });
+    const error = sut.validate<{ field: string }>({ field: fieldMock });
 
-    expect(error).toEqual(new InvalidParamError('field'));
+    expect(error).toEqual(new InvalidParamError(fieldMock));
   });
 
   test('Should return the first error if more than one validation fails', () => {
-    const { sut, validationStubs } = makeSut();
-    jest.spyOn(validationStubs[0], 'validate').mockReturnValueOnce(new Error());
-    jest.spyOn(validationStubs[1], 'validate').mockReturnValueOnce(new InvalidParamError('field'));
+    const { sut, validationSpies } = makeSut();
+    validationSpies[0].error = new Error();
+    validationSpies[1].error = new InvalidParamError(fieldMock);
 
-    const error = sut.validate<{ field: string }>({ field: 'any_value' });
+    const error = sut.validate<{ field: string }>({ field: fieldMock });
 
     expect(error).toEqual(new Error());
   });
@@ -41,7 +43,7 @@ describe('Validation Composite', () => {
   test('Should not return an error if validation succeeds', () => {
     const { sut } = makeSut();
 
-    const error = sut.validate<{ field: string }>({ field: 'any_value' });
+    const error = sut.validate<{ field: string }>({ field: fieldMock });
 
     expect(error).toBeFalsy();
   });

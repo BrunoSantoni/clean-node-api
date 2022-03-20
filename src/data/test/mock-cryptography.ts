@@ -7,9 +7,9 @@ import { Hasher } from '@/data/protocols/cryptography/hasher';
 // Todos os mocks relacionados a protocols/cryptography
 
 export class HasherSpy implements Hasher {
-  digest = faker.datatype.uuid(); // Retorno forçado
-
   plaintext: string; // Parâmetro recebido
+
+  digest = faker.datatype.uuid(); // Retorno forçado
 
   async hash(plaintext: string): Promise<string> {
     this.plaintext = plaintext;
@@ -18,9 +18,9 @@ export class HasherSpy implements Hasher {
 }
 
 export class EncrypterSpy implements Encrypter {
-  ciphertext = faker.datatype.uuid();
+  plaintext: string; // Input sempre indicando o tipo
 
-  plaintext: string;
+  ciphertext = faker.datatype.uuid(); // Retorno sempre mockando um valor
 
   async encrypt(plaintext: string): Promise<string> {
     this.plaintext = plaintext;

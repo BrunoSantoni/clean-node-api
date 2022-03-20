@@ -1,24 +1,30 @@
+import faker from '@faker-js/faker';
 import { InvalidParamError } from '@/presentation/errors';
 import { CompareFieldsValidation } from './compare-fields-validation';
 
-const makeSut = (): CompareFieldsValidation => new CompareFieldsValidation('field', 'fieldToCompare');
+const field = faker.random.word();
+const fieldToCompare = faker.random.word();
 
-describe('CompareFields Validation', () => {
-  test('Should return a InvalidParamError if validation fails', () => {
+const makeSut = (): CompareFieldsValidation => new CompareFieldsValidation(field, fieldToCompare);
+
+describe('Compare Fields Validation', () => {
+  test('Should return an InvalidParamError if validation fails', () => {
     const sut = makeSut();
     const error = sut.validate({
-      field: 'correct_value',
-      fieldToCompare: 'incorrect_value',
+      [field]: faker.random.word(), // Usou o field como key
+      [fieldToCompare]: faker.random.word(), // Usou o field compare como key
     });
 
-    expect(error).toEqual(new InvalidParamError('fieldToCompare'));
+    expect(error).toEqual(new InvalidParamError(fieldToCompare));
   });
 
   test('Should not return if validation succeeds', () => {
     const sut = makeSut();
+    const value = faker.random.word();
+
     const error = sut.validate({
-      field: 'correct_value',
-      fieldToCompare: 'correct_value',
+      [field]: value,
+      [fieldToCompare]: value,
     });
 
     expect(error).toBeFalsy();

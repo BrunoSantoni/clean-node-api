@@ -1,21 +1,20 @@
 import MockDate from 'mockdate';
 import { DbLoadSurveys } from './db-load-surveys';
-import { LoadSurveysRepository } from './db-load-surveys-protocols';
-import { mockLoadSurveysRepository } from '@/data/test';
+import { LoadSurveysRepositorySpy } from '@/data/test';
 import { mockSurveyModel, throwError } from '@/domain/test';
 
 type SutTypes = {
   sut: DbLoadSurveys;
-  loadSurveysRepositoryStub: LoadSurveysRepository;
+  loadSurveysRepositorySpy: LoadSurveysRepositorySpy;
 };
 
 const makeSut = (): SutTypes => {
-  const loadSurveysRepositoryStub = mockLoadSurveysRepository();
-  const sut = new DbLoadSurveys(loadSurveysRepositoryStub);
+  const loadSurveysRepositorySpy = new LoadSurveysRepositorySpy();
+  const sut = new DbLoadSurveys(loadSurveysRepositorySpy);
 
   return {
     sut,
-    loadSurveysRepositoryStub,
+    loadSurveysRepositorySpy,
   };
 };
 
@@ -29,29 +28,27 @@ describe('DbLoadSurveys Usecase', () => {
   });
 
   test('Should call LoadSurveysRepository', async () => {
-    const { sut, loadSurveysRepositoryStub } = makeSut();
-    const loadAllSpy = jest.spyOn(loadSurveysRepositoryStub, 'loadAll');
+    const { sut, loadSurveysRepositorySpy } = makeSut();
 
     await sut.load();
 
-    expect(loadAllSpy).toHaveBeenCalled();
-  });
-
-  test('Should return a survey list on success', async () => {
-    const { sut } = makeSut();
-
-    const surveys = await sut.load();
-    const expectedResponse = [mockSurveyModel(), mockSurveyModel('other')];
-
-    expect(surveys).toEqual(expectedResponse);
+    expect(loadSurveysRepositorySpy.callsCount).toBe(1);
   });
 
   test('Should throw if LoadSurveysRepository throws', async () => {
-    const { sut, loadSurveysRepositoryStub } = makeSut();
-    jest.spyOn(loadSurveysRepositoryStub, 'loadAll').mockImplementationOnce(throwError);
+    const { sut, loadSurveysRepositorySpy } = makeSut();
+    jest.spyOn(loadSurveysRepositorySpy, 'loadAll').mockImplementationOnce(throwError);
 
     const promise = sut.load();
 
     await expect(promise).rejects.toThrow();
+  });
+
+  test('Should return a survey list on success', async () => {
+    const { sut, loadSurveysRepositorySpy } = makeSut();
+
+    const surveys = await sut.load();
+
+    expect(surveys).toEqual(loadSurveysRepositorySpy.surveyModels);
   });
 });

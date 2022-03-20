@@ -1,11 +1,13 @@
 import { Validation } from '@/presentation/protocols';
 
-export const mockValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate<T>(data: T): Error | void {
-      return null;
-    }
-  }
+export class ValidationSpy implements Validation {
+  data: any;
 
-  return new ValidationStub();
-};
+  error: Error = null;
+
+  validate<T>(data: T): void | Error {
+    this.data = data;
+
+    return this.error;
+  }
+}

@@ -6,42 +6,51 @@ import { AccountModel } from '@/domain/models/account';
 import { mockAccountModel } from '@/domain/test';
 import { AddAccountParams } from '@/domain/usecases/account/add-account';
 
-export const mockAddAccountRepository = (): AddAccountRepository => {
-  class AddAccountRepositoryStub implements AddAccountRepository {
-    async add(accountData: AddAccountParams): Promise<AccountModel> {
-      return Promise.resolve(mockAccountModel());
-    }
+export class AddAccountRepositorySpy implements AddAccountRepository {
+  addAccountParams: AddAccountParams;
+
+  accountModel = mockAccountModel();
+
+  async add(accountData: AddAccountParams): Promise<AccountModel> {
+    this.addAccountParams = accountData;
+    return Promise.resolve(this.accountModel);
   }
+}
 
-  return new AddAccountRepositoryStub();
-};
+export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailRepository {
+  email: string;
 
-export const mockLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
-  class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail(email: string): Promise<AccountModel> {
-      return Promise.resolve(mockAccountModel());
-    }
+  accountModel = mockAccountModel();
+
+  async loadByEmail(email: string): Promise<AccountModel> {
+    this.email = email;
+    return Promise.resolve(this.accountModel);
   }
+}
 
-  return new LoadAccountByEmailRepositoryStub();
-};
+export class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenRepository {
+  token: string;
 
-export const mockLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
-  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
-    async loadByToken(token: string, role?: string): Promise<AccountModel> {
-      return Promise.resolve(mockAccountModel());
-    }
+  role?: string;
+
+  accountModel = mockAccountModel();
+
+  async loadByToken(token: string, role?: string): Promise<AccountModel> {
+    this.token = token;
+    this.role = role;
+    return Promise.resolve(this.accountModel);
   }
+}
 
-  return new LoadAccountByTokenRepositoryStub();
-};
+export class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenRepository {
+  id: string;
 
-export const mockUpdateAccessTokenRepository = (): UpdateAccessTokenRepository => {
-  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async updateAccessToken(id: string, token: string): Promise<void> {
-      return Promise.resolve();
-    }
+  token: string;
+
+  async updateAccessToken(accountId: string, token: string): Promise<void> {
+    this.id = accountId;
+    this.token = token;
+
+    return Promise.resolve();
   }
-
-  return new UpdateAccessTokenRepositoryStub();
-};
+}

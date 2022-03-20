@@ -1,5 +1,5 @@
+import faker from '@faker-js/faker';
 import {
-  LogErrorRepository,
   serverError,
   success,
   Controller,
@@ -7,77 +7,82 @@ import {
   HttpResponse,
 } from './log-controller-decorator-protocols';
 import { LogControllerDecorator } from './log-controller-decorator';
-import { mockLogErrorRepository } from '@/data/test';
+import { LogErrorRepositorySpy } from '@/data/test';
 import { mockAccountModel } from '@/domain/test';
 
 type SutTypes = {
   sut: LogControllerDecorator;
-  controllerStub: Controller;
-  logErrorRepositoryStub: LogErrorRepository;
+  controllerSpy: ControllerSpy;
+  logErrorRepositorySpy: LogErrorRepositorySpy;
 };
 
-const mockRequest = (): HttpRequest => ({
-  body: {
-    name: 'any_name',
-    email: 'any_email@mail.com',
-    password: 'any_password',
-    passwordConfirmation: 'any_password',
-  },
-});
+const mockRequest = (): HttpRequest => {
+  const password = faker.internet.password();
+
+  return {
+    body: {
+      name: faker.name.findName(),
+      email: faker.internet.email(),
+      password,
+      passwordConfirmation: password,
+    },
+  };
+};
 
 const mockServerError = (): HttpResponse => {
   const fakeError = new Error();
-  fakeError.stack = 'any_stack';
+  fakeError.stack = faker.random.words();
   return serverError(fakeError);
 };
 
-const makeController = (): Controller => {
-  class ControllerStub implements Controller {
-    async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-      return Promise.resolve(success(mockAccountModel()));
-    }
-  }
+class ControllerSpy implements Controller {
+  httpRequest: HttpRequest;
 
-  return new ControllerStub();
-};
+  httpResponse = success(mockAccountModel());
+
+  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+    this.httpRequest = httpRequest;
+    return Promise.resolve(this.httpResponse);
+  }
+}
 
 const makeSut = (): SutTypes => {
-  const controllerStub = makeController();
-  const logErrorRepositoryStub = mockLogErrorRepository();
-  const sut = new LogControllerDecorator(controllerStub, logErrorRepositoryStub);
+  const controllerSpy = new ControllerSpy();
+  const logErrorRepositorySpy = new LogErrorRepositorySpy();
+  const sut = new LogControllerDecorator(controllerSpy, logErrorRepositorySpy);
 
   return {
     sut,
-    controllerStub,
-    logErrorRepositoryStub,
+    controllerSpy,
+    logErrorRepositorySpy,
   };
 };
 describe('LogController Decorator', () => {
   test('Should call controller handle', async () => {
-    const { sut, controllerStub } = makeSut();
-    const handleSpy = jest.spyOn(controllerStub, 'handle');
+    const { sut, controllerSpy } = makeSut();
 
-    await sut.handle(mockRequest());
+    const httpRequest = mockRequest();
+    await sut.handle(httpRequest);
 
-    expect(handleSpy).toHaveBeenCalledWith(mockRequest());
-  });
-
-  test('Should return the same result of the controller', async () => {
-    const { sut } = makeSut();
-
-    const httpResponse = await sut.handle(mockRequest());
-
-    expect(httpResponse).toEqual(success(mockAccountModel()));
+    expect(controllerSpy.httpRequest).toEqual(httpRequest);
   });
 
   test('Should call LogErrorRepository with correct error if controller returns a server error', async () => {
-    const { sut, controllerStub, logErrorRepositoryStub } = makeSut();
+    const { sut, controllerSpy, logErrorRepositorySpy } = makeSut();
 
-    const logSpy = jest.spyOn(logErrorRepositoryStub, 'logError');
-    jest.spyOn(controllerStub, 'handle').mockReturnValueOnce(Promise.resolve(mockServerError()));
+    const serverErrorResponse = mockServerError();
+    controllerSpy.httpResponse = serverErrorResponse;
 
     await sut.handle(mockRequest());
 
-    expect(logSpy).toHaveBeenCalledWith('any_stack');
+    expect(logErrorRepositorySpy.stack).toBe(serverErrorResponse.body.stack);
+  });
+
+  test('Should return the same result of the controller', async () => {
+    const { sut, controllerSpy } = makeSut();
+
+    const httpResponse = await sut.handle(mockRequest());
+
+    expect(httpResponse).toEqual(controllerSpy.httpResponse);
   });
 });
