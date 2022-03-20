@@ -17,5 +17,6 @@ export const mockAddSurveyParams = (): AddSurveyParams => ({
 
 export const mockSurveyModel = (): SurveyModel => ({
   id: faker.datatype.uuid(),
+  didUserAnswered: faker.datatype.boolean(),
   ...mockAddSurveyParams(),
 });

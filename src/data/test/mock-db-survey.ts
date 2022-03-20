@@ -26,12 +26,12 @@ export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
 }
 
 export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
-  callsCount = 0;
+  accountId: string;
 
   surveyModels = [mockSurveyModel(), mockSurveyModel()];
 
-  async loadAll(): Promise<SurveyModel[]> {
-    this.callsCount += 1;
+  async loadAll(accountId: string): Promise<SurveyModel[]> {
+    this.accountId = accountId;
     return Promise.resolve(this.surveyModels);
   }
 }

@@ -1,5 +1,7 @@
 import MockDate from 'mockdate';
+import faker from '@faker-js/faker';
 import { LoadSurveysController } from './load-surveys-controller';
+import { HttpRequest } from './load-surveys-controller-protocols';
 import { throwError } from '@/domain/test';
 import { noContent, serverError, success } from '@/presentation/helpers/http/http-helper';
 import { LoadSurveysSpy } from '@/presentation/test';
@@ -8,6 +10,10 @@ type SutTypes = {
   sut: LoadSurveysController;
   loadSurveysSpy: LoadSurveysSpy;
 };
+
+const mockRequest = (): HttpRequest => ({
+  accountId: faker.datatype.uuid(),
+});
 
 const makeSut = (): SutTypes => {
   const loadSurveysSpy = new LoadSurveysSpy();
@@ -28,12 +34,13 @@ describe('LoadSurveys Controller', () => {
     MockDate.reset();
   });
 
-  test('Should call LoadSurveys correctly', async () => {
+  test('Should call LoadSurveys with correct value', async () => {
     const { sut, loadSurveysSpy } = makeSut();
 
-    await sut.handle({});
+    const httpRequest = mockRequest();
+    await sut.handle(httpRequest);
 
-    expect(loadSurveysSpy.callsCount).toBe(1);
+    expect(loadSurveysSpy.accountId).toBe(httpRequest.accountId);
   });
 
   test('Should return 200 on success', async () => {

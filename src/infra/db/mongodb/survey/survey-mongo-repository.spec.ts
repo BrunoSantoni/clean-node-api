@@ -1,21 +1,33 @@
-import { Collection } from 'mongodb';
-import { mockAddSurveyParams } from '@/domain/test';
+import { Collection, ObjectId } from 'mongodb';
 import { SurveyMongoRepository } from './survey-mongo-repository';
 import { MongoHelper } from './survey-mongo-repository-protocols';
+import { mockAddAccountParams, mockAddSurveyParams } from '@/domain/test';
 
+let accountCollection: Collection;
 let surveyCollection: Collection;
+let surveyResultCollection: Collection;
+
+const mockAccount = async (): Promise<string> => {
+  const { insertedId } = await accountCollection.insertOne(mockAddAccountParams());
+
+  return String(insertedId);
+};
 
 const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository();
 
 describe('Survey Mongo Repository', () => {
-  beforeAll(async () => {
-    await MongoHelper.connect(process.env.MONGO_URL);
+  beforeEach(async () => {
+    accountCollection = await MongoHelper.getCollection('accounts');
+    surveyCollection = await MongoHelper.getCollection('surveys');
+    surveyResultCollection = await MongoHelper.getCollection('survey_results');
+
+    await accountCollection.deleteMany({});
+    await surveyCollection.deleteMany({});
+    await surveyResultCollection.deleteMany({});
   });
 
-  beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection('surveys');
-
-    await surveyCollection.deleteMany({});
+  beforeAll(async () => {
+    await MongoHelper.connect(process.env.MONGO_URL);
   });
 
   afterAll(async () => {
@@ -36,23 +48,36 @@ describe('Survey Mongo Repository', () => {
 
   describe('loadAll()', () => {
     test('Should load all surveys on success', async () => {
+      const accountId = await mockAccount();
+
       const addSurveyModels = [mockAddSurveyParams(), mockAddSurveyParams()];
-      await surveyCollection.insertMany(addSurveyModels);
+
+      const { insertedIds } = await surveyCollection.insertMany(addSurveyModels);
+
+      await surveyResultCollection.insertOne({
+        surveyId: insertedIds['0'],
+        accountId: new ObjectId(accountId),
+        answer: addSurveyModels[0].answers[0].answer,
+        date: new Date(),
+      });
 
       const sut = makeSut();
 
-      const surveys = await sut.loadAll();
+      const surveys = await sut.loadAll(accountId);
 
       expect(surveys.length).toBe(2);
       expect(surveys[0].id).toBeTruthy();
       expect(surveys[0].question).toBe(addSurveyModels[0].question);
+      expect(surveys[0].didUserAnswered).toBe(true);
       expect(surveys[1].question).toBe(addSurveyModels[1].question);
+      expect(surveys[1].didUserAnswered).toBe(false);
     });
 
     test('Should load empty list', async () => {
+      const accountId = await mockAccount();
       const sut = makeSut();
 
-      const surveys = await sut.loadAll();
+      const surveys = await sut.loadAll(accountId);
 
       expect(surveys.length).toBe(0);
     });

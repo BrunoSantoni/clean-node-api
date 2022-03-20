@@ -14,12 +14,12 @@ export class AddSurveySpy implements AddSurvey {
 }
 
 export class LoadSurveysSpy implements LoadSurveys {
-  callsCount = 0;
+  accountId: string;
 
   surveyModels = [mockSurveyModel(), mockSurveyModel()];
 
-  load(): Promise<SurveyModel[]> {
-    this.callsCount += 1;
+  async load(accountId: string): Promise<SurveyModel[]> {
+    this.accountId = accountId;
     return Promise.resolve(this.surveyModels);
   }
 }
