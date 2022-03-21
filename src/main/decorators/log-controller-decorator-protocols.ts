@@ -1,4 +1,4 @@
 export * from '@/data/protocols/db/log/log-error-repository';
-export * from '@/domain/models/account';
-export * from '@/presentation/helpers/http/http-helper';
+export * from '@/domain/models';
+export * from '@/presentation/helpers';
 export * from '@/presentation/protocols';

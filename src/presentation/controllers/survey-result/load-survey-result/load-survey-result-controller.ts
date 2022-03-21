@@ -1,5 +1,5 @@
 import { InvalidParamError } from '@/presentation/errors';
-import { forbidden, serverError, success } from '@/presentation/helpers/http/http-helper';
+import { forbidden, serverError, success } from '@/presentation/helpers';
 import {
   Controller, HttpRequest, HttpResponse, LoadSurveyById, LoadSurveyResult,
 } from './load-survey-result-controller-protocols';

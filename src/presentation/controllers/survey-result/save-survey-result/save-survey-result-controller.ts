@@ -2,7 +2,7 @@ import {
   Controller, HttpRequest, HttpResponse, LoadSurveyById, SaveSurveyResult,
 } from './save-survey-result-controller-protocols';
 import { InvalidParamError } from '@/presentation/errors';
-import { forbidden, serverError, success } from '@/presentation/helpers/http/http-helper';
+import { forbidden, serverError, success } from '@/presentation/helpers';
 
 export class SaveSurveyResultController implements Controller {
   constructor(

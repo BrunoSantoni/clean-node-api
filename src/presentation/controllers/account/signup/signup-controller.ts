@@ -1,8 +1,8 @@
-import { AuthenticationModel } from '@/domain/models/authentication';
+import { AuthenticationModel } from '@/domain/models';
 import { EmailInUseError } from '@/presentation/errors';
 import {
   badRequest, forbidden, serverError, success,
-} from '@/presentation/helpers/http/http-helper';
+} from '@/presentation/helpers';
 import {
   Controller,
   HttpRequest,
