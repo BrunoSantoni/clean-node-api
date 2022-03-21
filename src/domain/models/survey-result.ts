@@ -3,6 +3,7 @@ type SurveyResultAnswerModel = {
   answer: string;
   count: number;
   percent: number;
+  isUserCurrentAnswer: boolean;
 };
 
 export type SurveyResultModel = {

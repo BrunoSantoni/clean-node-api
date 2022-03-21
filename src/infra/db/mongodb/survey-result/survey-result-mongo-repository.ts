@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import round from 'mongo-round';
 import {
   MongoHelper,
   SaveSurveyResultRepository,
@@ -25,7 +26,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
     });
   }
 
-  async loadBySurveyId(surveyId: string): Promise<SurveyResultModel> {
+  async loadBySurveyId(surveyId: string, accountId: string): Promise<SurveyResultModel> {
     const surveyResultCollection = await MongoHelper.getCollection('survey_results');
     const query = new QueryBuilder()
       .match({ surveyId: new ObjectId(surveyId) })
@@ -61,6 +62,13 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         count: { // Esse será o count de quantas respostas iguais tem
           $sum: 1,
         },
+        currentAccountAnswer: {
+          $push: {
+            $cond: [{
+              $eq: ['$data.accountId', new ObjectId(accountId)],
+            }, '$data.answer', null],
+          },
+        },
       })
       .project({
         _id: 0,
@@ -95,6 +103,11 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
                       },
                       else: 0,
                     },
+                  },
+                  isUserCurrentAnswer: {
+                    $eq: ['$$item.answer', {
+                      $arrayElemAt: ['$currentAccountAnswer', 0], // Pegou o primeiro item do array
+                    }],
                   },
                 },
               ],
@@ -137,6 +150,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
           date: '$date',
           answer: '$answers.answer',
           image: '$answers.image',
+          isUserCurrentAnswer: '$answers.isUserCurrentAnswer',
         },
         count: {
           $sum: '$answers.count',
@@ -153,8 +167,9 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         answer: {
           answer: '$_id.answer',
           image: '$_id.image',
-          count: '$count',
-          percent: '$percent',
+          count: round('$count'),
+          percent: round('$percent'),
+          isUserCurrentAnswer: '$_id.isUserCurrentAnswer',
         },
       })
       .sort({

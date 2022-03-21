@@ -10,13 +10,14 @@ import { HttpRequest } from './load-survey-result-controller-protocols';
 type SutTypes = {
   sut: LoadSurveyResultController,
   loadSurveyByIdSpy: LoadSurveyByIdSpy,
-  loadSurveyResultSpy: LoadSurveyResultSpy
+  loadSurveyResultSpy: LoadSurveyResultSpy,
 };
 
 const mockRequest = (): HttpRequest => ({
   params: {
     surveyId: faker.datatype.uuid(),
   },
+  accountId: faker.datatype.uuid(),
 });
 
 const makeSut = (): SutTypes => {
@@ -58,13 +59,14 @@ describe('LoadSurveyResult Controller', () => {
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')));
   });
 
-  test('Should call LoadSurveyResult with correct value', async () => {
+  test('Should call LoadSurveyResult with correct values', async () => {
     const { sut, loadSurveyResultSpy } = makeSut();
 
     const httpRequest = mockRequest();
     await sut.handle(httpRequest);
 
     expect(loadSurveyResultSpy.surveyId).toBe(httpRequest.params.surveyId);
+    expect(loadSurveyResultSpy.accountId).toBe(httpRequest.accountId);
   });
 
   test('Should return 500 if LoadSurveyById thows', async () => {
