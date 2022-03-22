@@ -1,8 +1,7 @@
-import { BcryptAdapter } from '@/infra/cryptography/bcrypt-adapter/bcrypt-adapter';
-import { JwtAdapter } from '@/infra/cryptography/jwt-adapter/jwt-adapter';
-import { AccountMongoRepository } from '@/infra/db/mongodb/account/account-mongo-repository';
-import { DbAuthentication } from '@/data/usecases/account/authentication/db-authentication';
+import { DbAuthentication } from '@/data/usecases/account';
 import { Authentication } from '@/domain/usecases';
+import { BcryptAdapter, JwtAdapter } from '@/infra/cryptography';
+import { AccountMongoRepository } from '@/infra/db';
 import { env } from '@/main/config/env';
 
 export const makeDbAuthentication = (): Authentication => {

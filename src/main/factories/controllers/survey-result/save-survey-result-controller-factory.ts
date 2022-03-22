@@ -1,8 +1,7 @@
-import { makeLogControllerDecorator } from '@/main/factories/decorators/log-controller-decorator-factory';
-import { makeDbSaveSurveyResult } from '@/main/factories/usecases/survey-result/db-save-survey-result-factory';
-import { makeDbLoadSurveyById } from '@/main/factories/usecases/survey/db-load-survey-by-id-factory';
-import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result/save-survey-result-controller';
+import { SaveSurveyResultController } from '@/presentation/controllers';
 import { Controller } from '@/presentation/protocols';
+import { makeDbSaveSurveyResult, makeDbLoadSurveyById } from '@/main/factories/usecases';
+import { makeLogControllerDecorator } from '@/main/factories/decorators';
 
 export const makeSaveSurveyResultController = (): Controller => {
   // Data

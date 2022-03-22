@@ -1,3 +1,3 @@
-export * from './add-survey';
-export * from './load-survey-by-id';
-export * from './load-surveys';
+export * from './db-add-survey';
+export * from './db-load-survey-by-id';
+export * from './db-load-surveys';

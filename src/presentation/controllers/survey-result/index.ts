@@ -1,2 +1,2 @@
-export * from './load-survey-result';
-export * from './save-survey-result';
+export * from './load-survey-result-controller';
+export * from './save-survey-result-controller';

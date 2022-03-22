@@ -1,8 +1,7 @@
-import { makeLogControllerDecorator } from '@/main/factories/decorators/log-controller-decorator-factory';
-import { makeDbLoadSurveyResult } from '@/main/factories/usecases/survey-result/db-load-survey-result-factory';
-import { makeDbLoadSurveyById } from '@/main/factories/usecases/survey/db-load-survey-by-id-factory';
-import { LoadSurveyResultController } from '@/presentation/controllers/survey-result/load-survey-result/load-survey-result-controller';
+import { LoadSurveyResultController } from '@/presentation/controllers';
 import { Controller } from '@/presentation/protocols';
+import { makeDbLoadSurveyResult, makeDbLoadSurveyById } from '@/main/factories/usecases';
+import { makeLogControllerDecorator } from '@/main/factories/decorators';
 
 export const makeLoadSurveyResultController = (): Controller => {
   // Data
