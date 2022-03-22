@@ -1,5 +1,4 @@
 import faker from '@faker-js/faker';
-import { HttpRequest } from '@/presentation/protocols';
 import { AuthMiddleware } from '@/presentation/middlewares';
 import { throwError } from '@/tests/domain/mocks';
 import { forbidden, serverError, success } from '@/presentation/helpers';
@@ -11,10 +10,8 @@ type SutTypes = {
   loadAccountByTokenSpy: LoadAccountByTokenSpy;
 };
 
-const mockRequest = (): HttpRequest => ({
-  headers: {
-    'x-access-token': faker.datatype.uuid(),
-  },
+const mockRequest = (): AuthMiddleware.Request => ({
+  accessToken: faker.datatype.uuid(),
 });
 
 const makeSut = (role?: string): SutTypes => {
@@ -41,10 +38,10 @@ describe('Auth Middleware', () => {
   test('Should call LoadAccountByToken with correct accessToken', async () => {
     const { sut, loadAccountByTokenSpy } = makeSut(role);
 
-    const httpRequest = mockRequest();
-    await sut.handle(httpRequest);
+    const request = mockRequest();
+    await sut.handle(request);
 
-    expect(loadAccountByTokenSpy.token).toBe(httpRequest.headers['x-access-token']);
+    expect(loadAccountByTokenSpy.token).toBe(request.accessToken);
     expect(loadAccountByTokenSpy.role).toBe(role);
   });
 
@@ -60,8 +57,8 @@ describe('Auth Middleware', () => {
   test('Should return 200 if LoadAccountByToken returns an account', async () => {
     const { sut, loadAccountByTokenSpy } = makeSut();
 
-    const httpRequest = mockRequest();
-    const httpResponse = await sut.handle(httpRequest);
+    const request = mockRequest();
+    const httpResponse = await sut.handle(request);
 
     expect(httpResponse).toEqual(success({ accountId: loadAccountByTokenSpy.accountModel.id }));
   });

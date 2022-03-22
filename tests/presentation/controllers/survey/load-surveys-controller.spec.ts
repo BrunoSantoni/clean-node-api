@@ -1,7 +1,6 @@
 import MockDate from 'mockdate';
 import faker from '@faker-js/faker';
 import { LoadSurveysController } from '@/presentation/controllers';
-import { HttpRequest } from '@/presentation/protocols';
 import { throwError } from '@/tests/domain/mocks';
 import { noContent, serverError, success } from '@/presentation/helpers';
 import { LoadSurveysSpy } from '@/tests/presentation/mocks';
@@ -11,7 +10,7 @@ type SutTypes = {
   loadSurveysSpy: LoadSurveysSpy;
 };
 
-const mockRequest = (): HttpRequest => ({
+const mockRequest = (): LoadSurveysController.Request => ({
   accountId: faker.datatype.uuid(),
 });
 
@@ -37,16 +36,16 @@ describe('LoadSurveys Controller', () => {
   test('Should call LoadSurveys with correct value', async () => {
     const { sut, loadSurveysSpy } = makeSut();
 
-    const httpRequest = mockRequest();
-    await sut.handle(httpRequest);
+    const request = mockRequest();
+    await sut.handle(request);
 
-    expect(loadSurveysSpy.accountId).toBe(httpRequest.accountId);
+    expect(loadSurveysSpy.accountId).toBe(request.accountId);
   });
 
   test('Should return 200 on success', async () => {
     const { sut, loadSurveysSpy } = makeSut();
 
-    const httpResponse = await sut.handle({});
+    const httpResponse = await sut.handle({} as LoadSurveysController.Request);
 
     expect(httpResponse).toEqual(success(loadSurveysSpy.surveyModels));
   });
@@ -64,7 +63,7 @@ describe('LoadSurveys Controller', () => {
     const { sut, loadSurveysSpy } = makeSut();
     jest.spyOn(loadSurveysSpy, 'load').mockImplementationOnce(throwError);
 
-    const httpResponse = await sut.handle({});
+    const httpResponse = await sut.handle({} as LoadSurveysController.Request);
 
     expect(httpResponse).toEqual(serverError(new Error()));
   });
