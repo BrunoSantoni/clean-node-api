@@ -6,7 +6,6 @@ import {
   LoadAccountByTokenRepository,
 } from '@/data/protocols/db';
 import { AccountModel } from '@/domain/models';
-import { AddAccountParams } from '@/domain/usecases';
 import { MongoHelper } from '@/infra/db/mongodb/helpers';
 
 export class AccountMongoRepository implements
@@ -14,11 +13,11 @@ AddAccountRepository,
 LoadAccountByEmailRepository,
 UpdateAccessTokenRepository,
 LoadAccountByTokenRepository {
-  async add(accountData: AddAccountParams): Promise<AccountModel> {
+  async add(accountData: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const { insertedId } = await accountCollection.insertOne({ ...accountData });
 
-    return MongoHelper.map<AddAccountParams>(insertedId, accountData);
+    return MongoHelper.map<AddAccountRepository.Params>(insertedId, accountData);
   }
 
   async loadByEmail(email: string): Promise<AccountModel> {

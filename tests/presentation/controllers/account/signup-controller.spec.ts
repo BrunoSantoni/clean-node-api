@@ -69,9 +69,9 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toEqual(serverError(new ServerError(stackMock)));
   });
 
-  test('Should return 403 if AddAccount returns null', async () => {
+  test('Should return 403 if AddAccount returns false', async () => {
     const { sut, addAccountSpy } = makeSut();
-    addAccountSpy.accountModel = null;
+    addAccountSpy.wasAccountCreated = false;
 
     const httpResponse = await sut.handle(mockRequest());
 

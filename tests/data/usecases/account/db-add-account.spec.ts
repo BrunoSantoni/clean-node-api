@@ -77,12 +77,12 @@ describe('DbAddAccount Usecase', () => {
     expect(loadAccountByEmailRepositorySpy.email).toBe(addAccountParams.email);
   });
 
-  test('Should return null if LoadAccountByEmailRepository returns an account', async () => {
+  test('Should return false if LoadAccountByEmailRepository returns an account', async () => {
     const { sut, loadAccountByEmailRepositorySpy } = makeSut();
     loadAccountByEmailRepositorySpy.accountModel = mockAccountModel(); // 'Criou' uma conta para cair no caso de erro de conta duplicada
 
-    const account = await sut.add(mockAddAccountParams());
-    expect(account).toBeNull();
+    const wasAccountCreated = await sut.add(mockAddAccountParams());
+    expect(wasAccountCreated).toBe(false);
   });
 
   test('Should throw if LoadAccountByEmailRepository throws', async () => {
@@ -93,10 +93,10 @@ describe('DbAddAccount Usecase', () => {
     await expect(promise).rejects.toThrow();
   });
 
-  test('Should return an account on success', async () => {
-    const { sut, addAccountRepositorySpy } = makeSut();
+  test('Should return true if email is not duplicated and account is added', async () => {
+    const { sut } = makeSut();
 
-    const account = await sut.add(mockAddAccountParams());
-    expect(addAccountRepositorySpy.accountModel).toEqual(account);
+    const wasAccountCreated = await sut.add(mockAddAccountParams());
+    expect(wasAccountCreated).toBe(true);
   });
 });

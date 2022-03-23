@@ -1,7 +1,6 @@
 import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/protocols/db';
 import { Hasher } from '@/data/protocols/cryptography';
-import { AccountModel } from '@/domain/models';
-import { AddAccount, AddAccountParams } from '@/domain/usecases';
+import { AddAccount } from '@/domain/usecases';
 
 export class DbAddAccount implements AddAccount {
   constructor(
@@ -10,18 +9,18 @@ export class DbAddAccount implements AddAccount {
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
   ) {}
 
-  async add(accountData: AddAccountParams): Promise<AccountModel> {
+  async add(accountData: AddAccount.Params): Promise<AddAccount.Result> {
     const accountAlreadyExists = await this.loadAccountByEmailRepository.loadByEmail(
       accountData.email,
     );
 
-    if (accountAlreadyExists) return null;
+    if (accountAlreadyExists) return false;
 
     const hashedPassword = await this.hasher.hash(accountData.password);
-    const newAccount = await this.addAccountRepository.add({
+    const wasAccountCreated = await this.addAccountRepository.add({
       ...accountData,
       password: hashedPassword,
     });
-    return newAccount;
+    return !!wasAccountCreated;
   }
 }
