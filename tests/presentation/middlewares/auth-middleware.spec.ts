@@ -47,7 +47,7 @@ describe('Auth Middleware', () => {
 
   test('Should return 403 if LoadAccountByToken returns null', async () => {
     const { sut, loadAccountByTokenSpy } = makeSut();
-    loadAccountByTokenSpy.accountModel = null;
+    loadAccountByTokenSpy.result = null;
 
     const httpResponse = await sut.handle(mockRequest());
 
@@ -60,7 +60,7 @@ describe('Auth Middleware', () => {
     const request = mockRequest();
     const httpResponse = await sut.handle(request);
 
-    expect(httpResponse).toEqual(success({ accountId: loadAccountByTokenSpy.accountModel.id }));
+    expect(httpResponse).toEqual(success({ accountId: loadAccountByTokenSpy.result.id }));
   });
 
   // Teste para colocar o try catch

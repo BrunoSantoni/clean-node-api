@@ -1,6 +1,5 @@
 import { LoadAccountByTokenRepository } from '@/data/protocols/db';
 import { Decrypter } from '@/data/protocols/cryptography';
-import { AccountModel } from '@/domain/models';
 import { LoadAccountByToken } from '@/domain/usecases';
 
 export class DbLoadAccountByToken implements LoadAccountByToken {
@@ -9,7 +8,7 @@ export class DbLoadAccountByToken implements LoadAccountByToken {
     private readonly loadAccountByTokenRepository: LoadAccountByTokenRepository,
   ) {}
 
-  async load(accessToken: string, role?: string): Promise<AccountModel> {
+  async load(accessToken: string, role?: string): Promise<LoadAccountByToken.Result> {
     // O jwt retorna uma exceção se possuir um token mas ele for inválido, queremo
     // colocar um catch para retornar null e apresentar 403 no front, e não um erro 500
     let decryptedToken: string;

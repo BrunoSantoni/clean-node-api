@@ -40,7 +40,7 @@ LoadAccountByTokenRepository {
     });
   }
 
-  async loadByToken(token: string, role?: string): Promise<AccountModel> {
+  async loadByToken(token: string, role?: string): Promise<LoadAccountByTokenRepository.Result> {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const { _id: mongoId, ...accountInfo } = await accountCollection.findOne({
       accessToken: token,
@@ -50,12 +50,16 @@ LoadAccountByTokenRepository {
       }, {
         role: 'admin',
       }],
+    }, {
+      projection: { // projection fala os campos que quer retornar
+        _id: 1,
+      },
     }) || {};
 
     if (!mongoId || !accountInfo) return null;
 
-    const convertedAccountInfo = accountInfo as Omit<AccountModel, 'id'>;
+    const convertedAccountInfo = accountInfo as Omit<LoadAccountByTokenRepository.Result, 'id'>;
 
-    return MongoHelper.map<Omit<AccountModel, 'id'>>(mongoId, convertedAccountInfo);
+    return MongoHelper.map<Omit<LoadAccountByTokenRepository.Result, 'id'>>(mongoId, convertedAccountInfo);
   }
 }
