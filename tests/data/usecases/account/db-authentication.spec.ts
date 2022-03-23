@@ -131,7 +131,7 @@ describe('DbAuthentication UseCase', () => {
   });
 
   // No caso de sucesso não mocka nada.
-  test('Should return an AuthenticationModel on success', async () => {
+  test('Should return an Authentication.Result on success', async () => {
     const { sut, encrypterSpy, loadAccountByEmailRepositorySpy } = makeSut();
 
     const { accessToken, name } = await sut.auth(mockAuthenticationParams());

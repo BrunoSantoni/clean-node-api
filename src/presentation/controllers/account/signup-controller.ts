@@ -1,5 +1,4 @@
 import { AddAccount, Authentication } from '@/domain/usecases';
-import { AuthenticationModel } from '@/domain/models';
 import { EmailInUseError } from '@/presentation/errors';
 import {
   badRequest, forbidden, serverError, success,
@@ -45,7 +44,7 @@ export class SignUpController implements Controller {
         password,
       });
 
-      return success<AuthenticationModel>(authenticationModel);
+      return success<Authentication.Result>(authenticationModel);
     } catch (error) {
       return serverError(error);
     }

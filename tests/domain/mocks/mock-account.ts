@@ -1,6 +1,6 @@
 import faker from '@faker-js/faker';
-import { AddAccount, AuthenticationParams } from '@/domain/usecases';
-import { AccountModel, AuthenticationModel } from '@/domain/models';
+import { AddAccount, Authentication } from '@/domain/usecases';
+import { AccountModel } from '@/domain/models';
 
 export const mockAddAccountParams = (): AddAccount.Params => ({
   name: faker.name.findName(),
@@ -13,12 +13,12 @@ export const mockAccountModel = (): AccountModel => ({
   ...mockAddAccountParams(),
 });
 
-export const mockAuthenticationParams = (): AuthenticationParams => ({
+export const mockAuthenticationParams = (): Authentication.Params => ({
   email: faker.internet.email(),
   password: faker.internet.password(),
 });
 
-export const mockAuthenticationModel = (): AuthenticationModel => ({
+export const mockAuthenticationModel = (): Authentication.Result => ({
   accessToken: faker.datatype.uuid(),
   name: faker.name.findName(),
 });
