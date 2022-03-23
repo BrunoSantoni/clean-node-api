@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import {
   AddAccountRepository,
+  CheckAccountByEmailRepository,
   LoadAccountByEmailRepository,
   UpdateAccessTokenRepository,
   LoadAccountByTokenRepository,
@@ -9,6 +10,7 @@ import { MongoHelper } from '@/infra/db/mongodb/helpers';
 
 export class AccountMongoRepository implements
 AddAccountRepository,
+CheckAccountByEmailRepository,
 LoadAccountByEmailRepository,
 UpdateAccessTokenRepository,
 LoadAccountByTokenRepository {
@@ -17,6 +19,21 @@ LoadAccountByTokenRepository {
     const { insertedId } = await accountCollection.insertOne({ ...accountData });
 
     return !!insertedId;
+  }
+
+  async checkByEmail(email: string): Promise<boolean> {
+    const accountCollection = await MongoHelper.getCollection('accounts');
+    const account = await accountCollection.findOne(
+      {
+        email,
+      }, {
+        projection: {
+          _id: 1,
+        },
+      },
+    );
+
+    return !!account;
   }
 
   async loadByEmail(email: string): Promise<LoadAccountByEmailRepository.Result> {
