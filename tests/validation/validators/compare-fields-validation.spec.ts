@@ -12,7 +12,7 @@ describe('Compare Fields Validation', () => {
     const sut = makeSut();
     const error = sut.validate({
       [field]: faker.random.word(), // Usou o field como key
-      [fieldToCompare]: faker.random.word(), // Usou o field compare como key
+      [fieldToCompare]: faker.random.words(2), // Usou o field compare como key
     });
 
     expect(error).toEqual(new InvalidParamError(fieldToCompare));

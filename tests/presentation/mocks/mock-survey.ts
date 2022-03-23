@@ -1,13 +1,11 @@
-import {
-  AddSurvey, AddSurveyParams, LoadSurveyById, LoadSurveys,
-} from '@/domain/usecases';
+import { AddSurvey, LoadSurveyById, LoadSurveys } from '@/domain/usecases';
 import { mockSurveyModel } from '@/tests/domain/mocks';
 import { SurveyModel } from '@/domain/models';
 
 export class AddSurveySpy implements AddSurvey {
-  surveyData: AddSurveyParams;
+  surveyData: AddSurvey.Params;
 
-  async add(data: AddSurveyParams): Promise<void> {
+  async add(data: AddSurvey.Params): Promise<void> {
     this.surveyData = data;
     return Promise.resolve();
   }
