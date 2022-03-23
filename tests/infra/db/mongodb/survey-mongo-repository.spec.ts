@@ -7,7 +7,7 @@ let accountCollection: Collection;
 let surveyCollection: Collection;
 let surveyResultCollection: Collection;
 
-const mockAccount = async (): Promise<string> => {
+const mockAccountId = async (): Promise<string> => {
   const { insertedId } = await accountCollection.insertOne(mockAddAccountParams());
 
   return String(insertedId);
@@ -48,7 +48,7 @@ describe('Survey Mongo Repository', () => {
 
   describe('loadAll()', () => {
     test('Should load all surveys on success', async () => {
-      const accountId = await mockAccount();
+      const accountId = await mockAccountId();
 
       const addSurveyModels = [mockAddSurveyParams(), mockAddSurveyParams()];
 
@@ -74,7 +74,7 @@ describe('Survey Mongo Repository', () => {
     });
 
     test('Should load empty list', async () => {
-      const accountId = await mockAccount();
+      const accountId = await mockAccountId();
       const sut = makeSut();
 
       const surveys = await sut.loadAll(accountId);

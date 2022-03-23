@@ -1,28 +1,31 @@
+import faker from '@faker-js/faker';
 import {
   AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenRepository, UpdateAccessTokenRepository,
 } from '@/data/protocols';
-import { AccountModel } from '@/domain/models';
-import { mockAccountModel } from '@/tests/domain/mocks';
 
 export class AddAccountRepositorySpy implements AddAccountRepository {
   addAccountParams: AddAccountRepository.Params;
 
-  accountModel = mockAccountModel();
+  wasAccountCreated = true;
 
   async add(accountData: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     this.addAccountParams = accountData;
-    return Promise.resolve(this.accountModel);
+    return Promise.resolve(this.wasAccountCreated);
   }
 }
 
 export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailRepository {
   email: string;
 
-  accountModel = mockAccountModel();
+  result = {
+    id: faker.datatype.uuid(),
+    name: faker.name.findName(),
+    password: faker.internet.password(),
+  };
 
-  async loadByEmail(email: string): Promise<AccountModel> {
+  async loadByEmail(email: string): Promise<LoadAccountByEmailRepository.Result> {
     this.email = email;
-    return Promise.resolve(this.accountModel);
+    return Promise.resolve(this.result);
   }
 }
 
@@ -31,12 +34,14 @@ export class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenReposi
 
   role?: string;
 
-  accountModel = mockAccountModel();
+  result = {
+    id: faker.datatype.uuid(),
+  };
 
   async loadByToken(token: string, role?: string): Promise<LoadAccountByTokenRepository.Result> {
     this.token = token;
     this.role = role;
-    return Promise.resolve(this.accountModel);
+    return Promise.resolve(this.result);
   }
 }
 

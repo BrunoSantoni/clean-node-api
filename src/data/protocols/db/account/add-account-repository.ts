@@ -1,10 +1,9 @@
 import { AddAccount } from '@/domain/usecases';
-import { AccountModel } from '@/domain/models';
 
 // Assim o infra não depende mais do domain
 export namespace AddAccountRepository {
   export type Params = AddAccount.Params;
-  export type Result = AccountModel;
+  export type Result = boolean;
 }
 
 export interface AddAccountRepository {

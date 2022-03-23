@@ -16,7 +16,7 @@ const mockSurvey = async (survey = mockAddSurveyParams()): Promise<string> => {
   return String(insertedId);
 };
 
-const mockAccount = async (): Promise<string> => {
+const mockAccountId = async (): Promise<string> => {
   const { insertedId } = await accountCollection.insertOne(mockAddAccountParams());
 
   return String(insertedId);
@@ -45,7 +45,7 @@ describe('Survey Result Mongo Repository', () => {
     test('Should add a survey result if its new', async () => {
       const survey = mockAddSurveyParams();
       const surveyId = await mockSurvey(survey);
-      const accountId = await mockAccount();
+      const accountId = await mockAccountId();
       const sut = makeSut();
 
       await sut.save({
@@ -66,7 +66,7 @@ describe('Survey Result Mongo Repository', () => {
     test('Should update a survey result if its not new', async () => {
       const survey = mockAddSurveyParams();
       const surveyId = await mockSurvey(survey);
-      const accountId = await mockAccount();
+      const accountId = await mockAccountId();
       await surveyResultCollection.insertOne({
         surveyId: new ObjectId(surveyId),
         accountId: new ObjectId(accountId),
@@ -99,8 +99,8 @@ describe('Survey Result Mongo Repository', () => {
         answer: faker.random.word(),
       });
       const surveyId = await mockSurvey(survey);
-      const firstAccountId = await mockAccount();
-      const secondAccountId = await mockAccount();
+      const firstAccountId = await mockAccountId();
+      const secondAccountId = await mockAccountId();
       await surveyResultCollection.insertMany([
         {
           surveyId: new ObjectId(surveyId),
@@ -150,9 +150,9 @@ describe('Survey Result Mongo Repository', () => {
         answer: faker.random.word(),
       });
       const surveyId = await mockSurvey(survey);
-      const firstAccountId = await mockAccount();
-      const secondAccountId = await mockAccount();
-      const thirdAccountId = await mockAccount();
+      const firstAccountId = await mockAccountId();
+      const secondAccountId = await mockAccountId();
+      const thirdAccountId = await mockAccountId();
       await surveyResultCollection.insertMany([
         {
           surveyId: new ObjectId(surveyId),
@@ -192,7 +192,7 @@ describe('Survey Result Mongo Repository', () => {
 
     test('Should load empty survey result', async () => {
       const surveyId = await mockSurvey();
-      const accountId = await mockAccount(); // Por ser um teste de integração precisa ser um accountId válido
+      const accountId = await mockAccountId(); // Por ser um teste de integração precisa ser um accountId válido
       const sut = makeSut();
 
       const surveyResult = await sut.loadBySurveyId(surveyId, accountId);

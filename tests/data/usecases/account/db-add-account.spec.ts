@@ -1,5 +1,6 @@
+import faker from '@faker-js/faker';
 import { DbAddAccount } from '@/data/usecases';
-import { mockAccountModel, mockAddAccountParams, throwError } from '@/tests/domain/mocks';
+import { mockAddAccountParams, throwError } from '@/tests/domain/mocks';
 import { AddAccountRepositorySpy, HasherSpy, LoadAccountByEmailRepositorySpy } from '@/tests/data/mocks';
 
 type SutTypes = {
@@ -13,7 +14,7 @@ const makeSut = (): SutTypes => {
   const hasherSpy = new HasherSpy();
   const addAccountRepositorySpy = new AddAccountRepositorySpy();
   const loadAccountByEmailRepositorySpy = new LoadAccountByEmailRepositorySpy();
-  loadAccountByEmailRepositorySpy.accountModel = null; // Setando como null para indicar que não tem nenhuma conta com esse e-mail
+  loadAccountByEmailRepositorySpy.result = null; // Setando como null para indicar que não tem nenhuma conta com esse e-mail
 
   const sut = new DbAddAccount(
     hasherSpy,
@@ -79,7 +80,11 @@ describe('DbAddAccount Usecase', () => {
 
   test('Should return false if LoadAccountByEmailRepository returns an account', async () => {
     const { sut, loadAccountByEmailRepositorySpy } = makeSut();
-    loadAccountByEmailRepositorySpy.accountModel = mockAccountModel(); // 'Criou' uma conta para cair no caso de erro de conta duplicada
+    loadAccountByEmailRepositorySpy.result = {
+      id: faker.datatype.uuid(),
+      name: faker.name.findName(),
+      password: faker.internet.password(),
+    };// 'Criou' uma conta para cair no caso de erro de conta duplicada
 
     const wasAccountCreated = await sut.add(mockAddAccountParams());
     expect(wasAccountCreated).toBe(false);
@@ -93,7 +98,15 @@ describe('DbAddAccount Usecase', () => {
     await expect(promise).rejects.toThrow();
   });
 
-  test('Should return true if email is not duplicated and account is added', async () => {
+  test('Should return false if AddAccountRepository returns false', async () => {
+    const { sut, addAccountRepositorySpy } = makeSut();
+    addAccountRepositorySpy.wasAccountCreated = false;
+
+    const wasAccountCreated = await sut.add(mockAddAccountParams());
+    expect(wasAccountCreated).toBe(false);
+  });
+
+  test('Should return true on success', async () => {
     const { sut } = makeSut();
 
     const wasAccountCreated = await sut.add(mockAddAccountParams());

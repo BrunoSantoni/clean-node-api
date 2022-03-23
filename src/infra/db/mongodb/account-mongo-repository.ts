@@ -5,7 +5,6 @@ import {
   UpdateAccessTokenRepository,
   LoadAccountByTokenRepository,
 } from '@/data/protocols/db';
-import { AccountModel } from '@/domain/models';
 import { MongoHelper } from '@/infra/db/mongodb/helpers';
 
 export class AccountMongoRepository implements
@@ -17,18 +16,28 @@ LoadAccountByTokenRepository {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const { insertedId } = await accountCollection.insertOne({ ...accountData });
 
-    return MongoHelper.map<AddAccountRepository.Params>(insertedId, accountData);
+    return !!insertedId;
   }
 
-  async loadByEmail(email: string): Promise<AccountModel> {
+  async loadByEmail(email: string): Promise<LoadAccountByEmailRepository.Result> {
     const accountCollection = await MongoHelper.getCollection('accounts');
-    const { _id: mongoId, ...accountInfo } = await accountCollection.findOne({ email }) || {};
+    const { _id: mongoId, ...accountInfo } = await accountCollection.findOne(
+      {
+        email,
+      }, {
+        projection: {
+          _id: 1,
+          name: 1,
+          password: 1,
+        },
+      },
+    ) || {};
 
     if (!mongoId || !accountInfo) return null;
 
-    const convertedAccountInfo = accountInfo as Omit<AccountModel, 'id'>;
+    const convertedAccountInfo = accountInfo as Omit<LoadAccountByEmailRepository.Result, 'id'>;
 
-    return MongoHelper.map<Omit<AccountModel, 'id'>>(mongoId, convertedAccountInfo);
+    return MongoHelper.map<Omit<LoadAccountByEmailRepository.Result, 'id'>>(mongoId, convertedAccountInfo);
   }
 
   async updateAccessToken(id: string, token: string): Promise<void> {

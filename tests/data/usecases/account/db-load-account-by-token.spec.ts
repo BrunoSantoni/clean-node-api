@@ -58,7 +58,7 @@ describe('DbLoadAccountByToken Usecase', () => {
 
   test('Should return null if LoadAccountByTokenRepository returns null', async () => {
     const { sut, loadAccountByTokenRepositorySpy } = makeSut();
-    loadAccountByTokenRepositorySpy.accountModel = null; // Mockando retorno para null
+    loadAccountByTokenRepositorySpy.result = null; // Mockando retorno para null
 
     const account = await sut.load(token, role);
 
@@ -88,6 +88,6 @@ describe('DbLoadAccountByToken Usecase', () => {
 
     const account = await sut.load(token, role);
 
-    expect(account).toEqual(loadAccountByTokenRepositorySpy.accountModel);
+    expect(account).toEqual(loadAccountByTokenRepositorySpy.result);
   });
 });

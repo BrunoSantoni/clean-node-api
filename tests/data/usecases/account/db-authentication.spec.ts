@@ -56,7 +56,7 @@ describe('DbAuthentication UseCase', () => {
 
   test('Should return null if LoadAccountByEmailRepository returns null', async () => {
     const { sut, loadAccountByEmailRepositorySpy } = makeSut();
-    loadAccountByEmailRepositorySpy.accountModel = null; // Não retornando nenhuma conta
+    loadAccountByEmailRepositorySpy.result = null; // Não retornando nenhuma conta
 
     const model = await sut.auth(mockAuthenticationParams());
     expect(model).toBeNull();
@@ -72,7 +72,7 @@ describe('DbAuthentication UseCase', () => {
     await sut.auth(authenticationParams);
 
     expect(hashComparerSpy.plaintext).toEqual(authenticationParams.password);
-    expect(hashComparerSpy.digest).toEqual(loadAccountByEmailRepositorySpy.accountModel.password);
+    expect(hashComparerSpy.digest).toEqual(loadAccountByEmailRepositorySpy.result.password);
   });
 
   test('Should throw if HashComparer throws', async () => {
@@ -99,7 +99,7 @@ describe('DbAuthentication UseCase', () => {
 
     await sut.auth(authenticationParams);
 
-    expect(encrypterSpy.plaintext).toBe(loadAccountByEmailRepositorySpy.accountModel.id);
+    expect(encrypterSpy.plaintext).toBe(loadAccountByEmailRepositorySpy.result.id);
   });
 
   test('Should throw if Encrypter throws', async () => {
@@ -118,7 +118,7 @@ describe('DbAuthentication UseCase', () => {
     const authenticationParams = mockAuthenticationParams();
     await sut.auth(authenticationParams);
 
-    expect(updateAccessTokenRepositorySpy.id).toBe(loadAccountByEmailRepositorySpy.accountModel.id);
+    expect(updateAccessTokenRepositorySpy.id).toBe(loadAccountByEmailRepositorySpy.result.id);
     expect(updateAccessTokenRepositorySpy.token).toBe(encrypterSpy.ciphertext);
   });
 
@@ -137,6 +137,6 @@ describe('DbAuthentication UseCase', () => {
     const { accessToken, name } = await sut.auth(mockAuthenticationParams());
 
     expect(encrypterSpy.ciphertext).toBe(accessToken);
-    expect(loadAccountByEmailRepositorySpy.accountModel.name).toBe(name);
+    expect(loadAccountByEmailRepositorySpy.result.name).toBe(name);
   });
 });

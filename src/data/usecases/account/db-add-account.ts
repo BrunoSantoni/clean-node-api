@@ -21,6 +21,6 @@ export class DbAddAccount implements AddAccount {
       ...accountData,
       password: hashedPassword,
     });
-    return !!wasAccountCreated;
+    return wasAccountCreated;
   }
 }

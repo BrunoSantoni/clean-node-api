@@ -1,7 +1,9 @@
-import { AccountModel } from '@/domain/models';
-
 export namespace AddAccount {
-  export type Params = Omit<AccountModel, 'id'>;
+  export type Params = {
+    name: string;
+    email: string;
+    password: string;
+  };
   export type Result = boolean;
 }
 export interface AddAccount {
