@@ -53,14 +53,14 @@ LoadSurveyByIdRepository {
     return MongoHelper.mapCollection(surveys);
   }
 
-  async loadById(id: string): Promise<SurveyModel> {
+  async loadById(id: string): Promise<LoadSurveyByIdRepository.Result> {
     const surveyCollection = await MongoHelper.getCollection('surveys');
     const { _id: mongoId, ...survey } = await surveyCollection.findOne({ _id: new ObjectId(id) });
 
     if (!mongoId || !survey) return null;
 
-    const convertedSurvey = survey as Omit<SurveyModel, 'id'>;
+    const convertedSurvey = survey as Omit<LoadSurveyByIdRepository.Result, 'id'>;
 
-    return MongoHelper.map<Omit<SurveyModel, 'id'>>(mongoId, convertedSurvey);
+    return MongoHelper.map<Omit<LoadSurveyByIdRepository.Result, 'id'>>(mongoId, convertedSurvey);
   }
 }

@@ -14,11 +14,11 @@ export class AddSurveyRepositorySpy implements AddSurveyRepository {
 export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
   id: string;
 
-  surveyModel = mockSurveyModel();
+  result = mockSurveyModel();
 
-  async loadById(id: string): Promise<SurveyModel> {
+  async loadById(id: string): Promise<LoadSurveyByIdRepository.Result> {
     this.id = id;
-    return Promise.resolve(this.surveyModel);
+    return Promise.resolve(this.result);
   }
 }
 
