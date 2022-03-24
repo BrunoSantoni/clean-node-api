@@ -33,7 +33,7 @@ LoadAccountByTokenRepository {
       },
     );
 
-    return !!account;
+    return Boolean(account);
   }
 
   async loadByEmail(email: string): Promise<LoadAccountByEmailRepository.Result> {

@@ -1,4 +1,5 @@
 import { Collection, ObjectId } from 'mongodb';
+import FakeObjectId from 'bson-objectid'; // Gera id's fakes do Mongo
 import { SurveyMongoRepository } from '@/infra/db';
 import { MongoHelper } from '@/infra/db/mongodb/helpers';
 import { mockAddAccountParams, mockAddSurveyParams } from '@/tests/domain/mocks';
@@ -80,6 +81,27 @@ describe('Survey Mongo Repository', () => {
       const surveys = await sut.loadAll(accountId);
 
       expect(surveys.length).toBe(0);
+    });
+  });
+
+  describe('checkById()', () => {
+    test('Should return true if survey exists', async () => {
+      const survey = mockAddSurveyParams();
+      const { insertedId } = await surveyCollection.insertOne(survey);
+
+      const sut = makeSut();
+
+      const surveyExists = await sut.checkById(String(insertedId));
+
+      expect(surveyExists).toBe(true);
+    });
+
+    test('Should return false if survey is not found', async () => {
+      const sut = makeSut();
+
+      const surveyExists = await sut.checkById(String(FakeObjectId()));
+
+      expect(surveyExists).toBe(false);
     });
   });
 
