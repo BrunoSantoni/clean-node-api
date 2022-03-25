@@ -1,6 +1,6 @@
 import { LoadSurveyByIdRepository, LoadSurveyResultRepository } from '@/data/protocols/db';
 import { LoadSurveyResult } from '@/domain/usecases';
-import { SurveyResultModel } from '@/domain/models';
+import { SurveyModel, SurveyResultModel } from '@/domain/models';
 
 export class DbLoadSurveyResult implements LoadSurveyResult {
   constructor(
@@ -17,7 +17,13 @@ export class DbLoadSurveyResult implements LoadSurveyResult {
 
     const survey = await this.loadSurveyByIdRepository.loadById(surveyId);
 
-    const newSurveyResult: SurveyResultModel = {
+    const newSurveyResult = this.makeEmptySurveyResult(survey);
+
+    return newSurveyResult;
+  }
+
+  private makeEmptySurveyResult(survey: SurveyModel): SurveyResultModel {
+    return {
       surveyId: survey.id,
       question: survey.question,
       date: survey.date,
@@ -28,7 +34,5 @@ export class DbLoadSurveyResult implements LoadSurveyResult {
         isUserCurrentAnswer: false,
       })),
     };
-
-    return newSurveyResult;
   }
 }

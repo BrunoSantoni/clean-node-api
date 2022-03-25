@@ -1,7 +1,8 @@
+import faker from '@faker-js/faker';
 import {
   AddSurvey,
   CheckSurveyById,
-  LoadSurveyById,
+  LoadAnswersBySurvey,
   LoadSurveys,
 } from '@/domain/usecases';
 import { mockSurveyModel } from '@/tests/domain/mocks';
@@ -38,13 +39,13 @@ export class CheckSurveyByIdSpy implements CheckSurveyById {
   }
 }
 
-export class LoadSurveyByIdSpy implements LoadSurveyById {
+export class LoadAnswersBySurveySpy implements LoadAnswersBySurvey {
   surveyId: string;
 
-  surveyModel = mockSurveyModel();
+  result = [faker.random.word(), faker.random.word()];
 
-  async loadById(id: string): Promise<SurveyModel> {
+  async loadAnswers(id: string): Promise<LoadAnswersBySurvey.Result> {
     this.surveyId = id;
-    return Promise.resolve(this.surveyModel);
+    return Promise.resolve(this.result);
   }
 }
