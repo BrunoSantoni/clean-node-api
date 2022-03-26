@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { successStatusCodes } from '@/main/adapters/helpers';
 import { Controller } from '@/presentation/protocols';
 
 export const adaptRoute = (controller: Controller) => async (req: Request, res: Response) => {
@@ -8,7 +9,6 @@ export const adaptRoute = (controller: Controller) => async (req: Request, res: 
     accountId: req.accountId,
   };
 
-  const successStatusCodes = [200, 204];
   const httpResponse = await controller.handle(request);
 
   if (!successStatusCodes.includes(httpResponse.statusCode)) {

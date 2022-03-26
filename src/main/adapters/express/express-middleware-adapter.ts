@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { successStatusCodes } from '@/main/adapters/helpers';
 import { Middleware } from '@/presentation/protocols';
 
 export const adaptMiddleware = (middleware: Middleware) => async (
@@ -9,8 +10,6 @@ export const adaptMiddleware = (middleware: Middleware) => async (
     accessToken: req.headers?.['x-access-token'],
     ...(req.headers || {}),
   };
-
-  const successStatusCodes = [200, 204];
 
   const httpResponse = await middleware.handle(request);
 
