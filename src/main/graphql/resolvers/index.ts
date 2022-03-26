@@ -1,3 +1,3 @@
-import { login } from './login';
+import { account } from './account';
 
-export const resolvers = [login];
+export const resolvers = [account];

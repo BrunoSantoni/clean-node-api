@@ -1,4 +1,4 @@
 import { base } from './base';
-import { login } from './login';
+import { account } from './account';
 
-export const typeDefs = [base, login];
+export const typeDefs = [base, account];
