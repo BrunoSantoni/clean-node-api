@@ -118,5 +118,35 @@ describe('Survey Mongo Repository', () => {
       expect(returnedSurvey.question).toEqual(survey.question);
       expect(returnedSurvey.answers).toEqual(survey.answers);
     });
+
+    test('Should return null if survey does not exists', async () => {
+      const sut = makeSut();
+
+      const survey = await sut.loadById(String(FakeObjectId()));
+
+      expect(survey).toBeNull();
+    });
+  });
+
+  describe('loadAnswers()', () => {
+    test('Should load survey answers on success', async () => {
+      const survey = mockAddSurveyParams();
+      const { insertedId } = await surveyCollection.insertOne(survey);
+
+      const sut = makeSut();
+
+      const answers = await sut.loadAnswers(String(insertedId));
+      const insertedSurveyAnswers = survey.answers.map((a) => a.answer);
+
+      expect(answers).toEqual(insertedSurveyAnswers);
+    });
+
+    test('Should return empty array if survey does not exists', async () => {
+      const sut = makeSut();
+
+      const answers = await sut.loadAnswers(String(FakeObjectId()));
+
+      expect(answers).toEqual([]);
+    });
   });
 });
