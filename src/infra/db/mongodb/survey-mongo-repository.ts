@@ -6,7 +6,6 @@ import {
   LoadSurveysRepository,
   LoadSurveyByIdRepository,
 } from '@/data/protocols/db';
-import { SurveyModel } from '@/domain/models';
 import { MongoHelper, QueryBuilder } from '@/infra/db/mongodb/helpers';
 
 export class SurveyMongoRepository implements
@@ -20,7 +19,7 @@ LoadSurveyByIdRepository {
     await surveyCollection.insertOne(surveyData);
   }
 
-  async loadAll(accountId: string): Promise<SurveyModel[]> {
+  async loadAll(accountId: string): Promise<LoadSurveysRepository.Result> {
     const surveyCollection = await MongoHelper.getCollection('surveys');
 
     const query = new QueryBuilder()

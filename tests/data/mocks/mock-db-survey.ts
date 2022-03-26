@@ -6,7 +6,6 @@ import {
   LoadSurveyByIdRepository,
   LoadSurveysRepository,
 } from '@/data/protocols';
-import { SurveyModel } from '@/domain/models';
 import { mockSurveyModel } from '@/tests/domain/mocks';
 
 export class AddSurveyRepositorySpy implements AddSurveyRepository {
@@ -56,7 +55,7 @@ export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
 
   surveyModels = [mockSurveyModel(), mockSurveyModel()];
 
-  async loadAll(accountId: string): Promise<SurveyModel[]> {
+  async loadAll(accountId: string): Promise<LoadSurveysRepository.Result> {
     this.accountId = accountId;
     return Promise.resolve(this.surveyModels);
   }

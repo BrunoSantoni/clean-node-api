@@ -6,7 +6,6 @@ import {
   LoadSurveys,
 } from '@/domain/usecases';
 import { mockSurveyModel } from '@/tests/domain/mocks';
-import { SurveyModel } from '@/domain/models';
 
 export class AddSurveySpy implements AddSurvey {
   surveyData: AddSurvey.Params;
@@ -22,7 +21,7 @@ export class LoadSurveysSpy implements LoadSurveys {
 
   surveyModels = [mockSurveyModel(), mockSurveyModel()];
 
-  async load(accountId: string): Promise<SurveyModel[]> {
+  async load(accountId: string): Promise<LoadSurveys.Result> {
     this.accountId = accountId;
     return Promise.resolve(this.surveyModels);
   }
