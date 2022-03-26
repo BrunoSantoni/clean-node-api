@@ -4,12 +4,10 @@ import {
   LoadSurveyResultRepository,
   SaveSurveyResultRepository,
 } from '@/data/protocols/db';
-import { SaveSurveyResultParams } from '@/domain/usecases';
-import { SurveyResultModel } from '@/domain/models';
 import { MongoHelper, QueryBuilder } from '@/infra/db/mongodb/helpers';
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository, LoadSurveyResultRepository {
-  async save(surveyData: SaveSurveyResultParams): Promise<void> {
+  async save(surveyData: SaveSurveyResultRepository.Params): Promise<SaveSurveyResultRepository.Result> {
     const surveyResultCollection = await MongoHelper.getCollection('survey_results');
 
     await surveyResultCollection.findOneAndUpdate({
@@ -195,6 +193,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
 
     const surveyResult = await surveyResultCollection.aggregate(query).toArray();
 
-    return surveyResult.length ? surveyResult[0] as SurveyResultModel : null;
+    return surveyResult.length ? surveyResult[0] as LoadSurveyResultRepository.Result : null;
   }
 }

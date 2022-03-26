@@ -107,6 +107,6 @@ describe('SaveSurveyResult Controller', () => {
     const request = mockRequest(loadAnswersBySurveySpy.result[0]); // Passando uma resposta correta para não dar throw antes de chamar o SaveSurveyResult
     const httpResponse = await sut.handle(request);
 
-    expect(httpResponse).toEqual(success(saveSurveyResultSpy.surveyResultModel));
+    expect(httpResponse).toEqual(success(saveSurveyResultSpy.result));
   });
 });

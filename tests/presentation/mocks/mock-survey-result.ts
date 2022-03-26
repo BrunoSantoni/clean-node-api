@@ -1,16 +1,15 @@
-import { SaveSurveyResult, SaveSurveyResultParams, LoadSurveyResult } from '@/domain/usecases';
-import { SurveyResultModel } from '@/domain/models';
+import { SaveSurveyResult, LoadSurveyResult } from '@/domain/usecases';
 import { mockSurveyResultModel } from '@/tests/domain/mocks';
 
 export class SaveSurveyResultSpy implements SaveSurveyResult {
-  data: SaveSurveyResultParams;
+  data: SaveSurveyResult.Params;
 
-  surveyResultModel = mockSurveyResultModel();
+  result = mockSurveyResultModel();
 
-  async save(data: SaveSurveyResultParams): Promise<SurveyResultModel> {
+  async save(data: SaveSurveyResult.Params): Promise<SaveSurveyResult.Result> {
     this.data = data;
 
-    return Promise.resolve(this.surveyResultModel);
+    return Promise.resolve(this.result);
   }
 }
 
@@ -19,12 +18,12 @@ export class LoadSurveyResultSpy implements LoadSurveyResult {
 
   accountId: string;
 
-  surveyResultModel = mockSurveyResultModel();
+  result = mockSurveyResultModel();
 
   async load(surveyId: string, accountId: string): Promise<LoadSurveyResult.Result> {
     this.surveyId = surveyId;
     this.accountId = accountId;
 
-    return Promise.resolve(this.surveyResultModel);
+    return Promise.resolve(this.result);
   }
 }

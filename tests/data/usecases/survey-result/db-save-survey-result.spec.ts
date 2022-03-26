@@ -67,6 +67,6 @@ describe('DbSaveSurveyResult Usecase', () => {
     const { sut, loadSurveyResultRepositorySpy } = makeSut();
     const surveyResult = await sut.save(mockSaveSurveyResultParams());
 
-    expect(surveyResult).toEqual(loadSurveyResultRepositorySpy.surveyResult);
+    expect(surveyResult).toEqual(loadSurveyResultRepositorySpy.result);
   });
 });
