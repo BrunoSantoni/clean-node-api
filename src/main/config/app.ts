@@ -1,17 +1,20 @@
-import express from 'express';
-import { setupApolloServer } from './apollo-server';
-import { setupSwagger } from './swagger';
-import { setupMiddlewares } from './middlewares';
-import { setupRoutes } from './routes';
-import { setupStaticFiles } from './static-files';
+import express, { Express } from 'express';
+import { setupSwagger } from '@/main/config/swagger';
+import { setupMiddlewares } from '@/main/config/middlewares';
+import { setupRoutes } from '@/main/config/routes';
+import { setupStaticFiles } from '@/main/config/static-files';
+import { setupApolloServer } from '@/main/graphql/apollo';
 
-const app = express();
-(async function () {
-  await setupApolloServer(app);
+export const setupApp = async (): Promise<Express> => {
+  const app = express();
+  const apolloServer = setupApolloServer();
   setupSwagger(app);
   setupStaticFiles(app); // Antes do Middlewares para não setar o content type
   setupMiddlewares(app);
   setupRoutes(app);
-}());
 
-export { app };
+  await apolloServer.start();
+  apolloServer.applyMiddleware({ app });
+
+  return app;
+};

@@ -1,12 +1,15 @@
 import { Collection } from 'mongodb';
 import { sign } from 'jsonwebtoken';
 import request from 'supertest';
-import { app } from '@/main/config/app';
-import { env } from '@/main/config/env';
+import { Express } from 'express';
 import { MongoHelper } from '@/infra/db';
+import { setupApp } from '@/main/config/app';
+import { env } from '@/main/config/env';
 
 let surveyCollection: Collection;
 let accountCollection: Collection;
+let app: Express;
+
 const mockAccessToken = async (): Promise<string> => {
   const { insertedId } = await accountCollection.insertOne({
     name: 'Bruno Santoni',
@@ -30,6 +33,7 @@ const mockAccessToken = async (): Promise<string> => {
 
 describe('Survey GraphQL', () => {
   beforeAll(async () => {
+    app = await setupApp();
     await MongoHelper.connect(process.env.MONGO_URL);
   });
 

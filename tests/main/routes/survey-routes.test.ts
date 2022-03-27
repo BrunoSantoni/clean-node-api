@@ -2,13 +2,15 @@ import request from 'supertest';
 import { Collection } from 'mongodb';
 import { sign } from 'jsonwebtoken';
 import faker from '@faker-js/faker';
+import { Express } from 'express';
 import { MongoHelper } from '@/infra/db/mongodb/helpers';
-import { app } from '@/main/config/app';
+import { setupApp } from '@/main/config/app';
 import { env } from '@/main/config/env';
 import { mockAddSurveyParams } from '@/tests/domain/mocks';
 
 let surveyCollection: Collection;
 let accountCollection: Collection;
+let app: Express;
 
 const makeAccessToken = async (): Promise<string> => {
   const account = await accountCollection.insertOne({
@@ -32,6 +34,7 @@ const makeAccessToken = async (): Promise<string> => {
 
 describe('Survey Routes', () => {
   beforeAll(async () => {
+    app = await setupApp();
     await MongoHelper.connect(process.env.MONGO_URL);
   });
 
