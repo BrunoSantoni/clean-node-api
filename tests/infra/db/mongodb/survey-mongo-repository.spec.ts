@@ -18,9 +18,9 @@ const makeSut = (): SurveyMongoRepository => new SurveyMongoRepository();
 
 describe('Survey Mongo Repository', () => {
   beforeEach(async () => {
-    accountCollection = await MongoHelper.getCollection('accounts');
-    surveyCollection = await MongoHelper.getCollection('surveys');
-    surveyResultCollection = await MongoHelper.getCollection('survey_results');
+    accountCollection = MongoHelper.getCollection('accounts');
+    surveyCollection = MongoHelper.getCollection('surveys');
+    surveyResultCollection = MongoHelper.getCollection('survey_results');
 
     await accountCollection.deleteMany({});
     await surveyCollection.deleteMany({});

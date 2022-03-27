@@ -15,12 +15,12 @@ LoadAnswersBySurveyRepository,
 LoadSurveysRepository,
 LoadSurveyByIdRepository {
   async add(surveyData: AddSurveyRepository.Params): Promise<AddSurveyRepository.Result> {
-    const surveyCollection = await MongoHelper.getCollection('surveys');
+    const surveyCollection = MongoHelper.getCollection('surveys');
     await surveyCollection.insertOne(surveyData);
   }
 
   async loadAll(accountId: string): Promise<LoadSurveysRepository.Result> {
-    const surveyCollection = await MongoHelper.getCollection('surveys');
+    const surveyCollection = MongoHelper.getCollection('surveys');
 
     const query = new QueryBuilder()
       .lookup({
@@ -57,7 +57,7 @@ LoadSurveyByIdRepository {
   }
 
   async checkById(id: string): Promise<boolean> {
-    const surveyCollection = await MongoHelper.getCollection('surveys');
+    const surveyCollection = MongoHelper.getCollection('surveys');
     const survey = await surveyCollection.findOne({ _id: new ObjectId(id) }, {
       projection: {
         _id: 1,
@@ -68,7 +68,7 @@ LoadSurveyByIdRepository {
   }
 
   async loadById(id: string): Promise<LoadSurveyByIdRepository.Result> {
-    const surveyCollection = await MongoHelper.getCollection('surveys');
+    const surveyCollection = MongoHelper.getCollection('surveys');
     const { _id: mongoId, ...survey } = await surveyCollection.findOne({ _id: new ObjectId(id) }) || {};
 
     if (!mongoId || !survey) return null;
@@ -79,7 +79,7 @@ LoadSurveyByIdRepository {
   }
 
   async loadAnswers(id: string): Promise<LoadAnswersBySurveyRepository.Result> {
-    const surveyCollection = await MongoHelper.getCollection('surveys');
+    const surveyCollection = MongoHelper.getCollection('surveys');
     const query = new QueryBuilder()
       .match({
         _id: new ObjectId(id),

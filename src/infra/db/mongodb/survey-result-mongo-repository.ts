@@ -8,7 +8,7 @@ import { MongoHelper, QueryBuilder } from '@/infra/db/mongodb/helpers';
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository, LoadSurveyResultRepository {
   async save(surveyData: SaveSurveyResultRepository.Params): Promise<SaveSurveyResultRepository.Result> {
-    const surveyResultCollection = await MongoHelper.getCollection('survey_results');
+    const surveyResultCollection = MongoHelper.getCollection('survey_results');
 
     await surveyResultCollection.findOneAndUpdate({
       surveyId: new ObjectId(surveyData.surveyId),
@@ -24,7 +24,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
   }
 
   async loadBySurveyId(surveyId: string, accountId: string): Promise<LoadSurveyResultRepository.Result> {
-    const surveyResultCollection = await MongoHelper.getCollection('survey_results');
+    const surveyResultCollection = MongoHelper.getCollection('survey_results');
     const query = new QueryBuilder()
       .match({ surveyId: new ObjectId(surveyId) })
       .group({
@@ -191,8 +191,8 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
       })
       .build();
 
-    const surveyResult = await surveyResultCollection.aggregate(query).toArray();
+    const surveyResult = await surveyResultCollection.aggregate<LoadSurveyResultRepository.Result>(query).toArray();
 
-    return surveyResult.length ? surveyResult[0] as LoadSurveyResultRepository.Result : null;
+    return surveyResult.length ? surveyResult[0] : null;
   }
 }
