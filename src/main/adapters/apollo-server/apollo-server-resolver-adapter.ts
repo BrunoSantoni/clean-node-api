@@ -4,8 +4,9 @@ import {
 import { successStatusCodes } from '@/main/adapters/helpers';
 import { Controller } from '@/presentation/protocols';
 
-export const adaptResolver = async (controller: Controller, args: any): Promise<any> => {
-  const httpResponse = await controller.handle(args);
+export const adaptResolver = async (controller: Controller, args?: any): Promise<any> => {
+  const request = { ...(args || {}) };
+  const httpResponse = await controller.handle(request);
   const { body, statusCode } = httpResponse;
 
   const statusCodesResponses = {
