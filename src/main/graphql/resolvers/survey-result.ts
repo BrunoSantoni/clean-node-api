@@ -3,9 +3,9 @@ import { adaptResolver } from '@/main/adapters';
 
 export const surveyResult = {
   Query: {
-    loadSurveyResult: async (parent: any, args: any) => adaptResolver(makeLoadSurveyResultController(), args),
+    loadSurveyResult: async (parent: any, args: any, context: any) => adaptResolver(makeLoadSurveyResultController(), args, context),
   },
   Mutation: {
-    saveSurveyResult: async (parent: any, args: any) => adaptResolver(makeSaveSurveyResultController(), args),
+    saveSurveyResult: async (parent: any, args: any, context: any) => adaptResolver(makeSaveSurveyResultController(), args, context),
   },
 };
