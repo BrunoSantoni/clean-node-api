@@ -10,7 +10,7 @@ export const survey = gql`
     question: String!
     answers: [SurveyAnswer!]!
     date: DateTime!
-    didAnswer: Boolean
+    didUserAnswered: Boolean
   }
 
   type SurveyAnswer {
