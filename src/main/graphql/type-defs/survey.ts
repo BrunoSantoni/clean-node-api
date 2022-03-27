@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 
 export const survey = gql`
   extend type Query {
-    surveys: [Survey!]! # Survey não pode ser nulo e o array tem que existir
+    surveys: [Survey!]! @auth # Usando a diretiva de auth definida na base
   }
 
   type Survey {

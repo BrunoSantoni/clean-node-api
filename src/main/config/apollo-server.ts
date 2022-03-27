@@ -1,7 +1,9 @@
 import { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { GraphQLError } from 'graphql';
+import { makeExecutableSchema } from 'graphql-tools';
 import { resolvers, typeDefs } from '@/main/graphql';
+import { authDirectiveTransformer } from '@/main/graphql/directives';
 
 const checkError = (error: GraphQLError, errorName: string): boolean => [error.name, error.originalError?.name].some((name) => name === errorName);
 
@@ -20,10 +22,13 @@ const handleErrors = (response: any, errors: readonly GraphQLError[]): void => {
   });
 };
 
+let schema = makeExecutableSchema({ resolvers, typeDefs });
+schema = authDirectiveTransformer(schema);
+
 export const setupApolloServer = async (app: Express): Promise<void> => {
   const server = new ApolloServer({
-    resolvers,
-    typeDefs,
+    schema,
+    context: ({ req }) => ({ req }), // Contexto vai compartilhar os dados do request entre quaisquer query
     // Alterando o statuscode na resposta
     plugins: [{
       async requestDidStart() {
